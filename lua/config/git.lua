@@ -48,7 +48,7 @@ map("n", "<leader>hd", gs.diffthis, "Diff This")
 -- ============ LazyGit Setup ============
 -- vim.g.lazygit_floating_window_winblend = 10
 -- vim.g.lazygit_floating_window_scaling_factor = 0.9
--- vim.g.lazygit_floating_window_use_plenary = 1
+vim.g.lazygit_floating_window_use_plenary = 1
 -- vim.g.lazygit_use_neovim_remote = 1
 
 vim.keymap.set("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "Open LazyGit" })
