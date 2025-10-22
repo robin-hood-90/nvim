@@ -71,3 +71,5 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Open location list" })
 vim.keymap.set("n", "<leader>xq", "<cmd>Trouble quickfix toggle<cr>", { desc = "Open quickfix list" })
+
+vim.keymap.set("n", "<leader>nd", "<cmd>NotificationsClear<CR>", { desc = "Toggle Neotree" })
