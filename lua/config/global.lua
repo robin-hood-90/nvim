@@ -17,11 +17,13 @@ vim.pack.add({
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 	{ src = "https://github.com/mfussenegger/nvim-jdtls" },
+	{ src = "https://github.com/abecodes/tabout.nvim" },
 })
 require("nvim-surround").setup()
 require("render-markdown").setup({})
 require("nvim-autopairs").setup({})
 require("ibl").setup()
+require("tabout").setup()
 
 -- Telescope settings
 local telescope = require("telescope")
