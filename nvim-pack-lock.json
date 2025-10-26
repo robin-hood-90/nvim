@@ -8,6 +8,10 @@
       "rev": "21e9fec",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "avante.nvim": {
+      "rev": "164a86d",
+      "src": "https://github.com/yetone/avante.nvim"
+    },
     "blink.cmp": {
       "rev": "ddeab4c",
       "src": "https://github.com/Saghen/blink.cmp"
@@ -100,6 +104,10 @@
     "render-markdown.nvim": {
       "rev": "475d3ad",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
+    },
+    "supermaven-nvim": {
+      "rev": "07d20fc",
+      "src": "https://github.com/supermaven-inc/supermaven-nvim"
     },
     "telescope-env.nvim": {
       "rev": "00a703c",

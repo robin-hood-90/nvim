@@ -55,7 +55,7 @@ opt.swapfile = false
 
 opt.scrolloff = 8
 opt.sidescrolloff = 8
-opt.colorcolumn = "100"
+opt.colorcolumn = "80"
 local function set_custom_highlights()
 	vim.api.nvim_set_hl(0, "ColorColumn", { ctermbg = 0, bg = "#2e2e2e" })
 end
