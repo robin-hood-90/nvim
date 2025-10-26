@@ -23,7 +23,7 @@ require("nvim-surround").setup()
 require("render-markdown").setup({})
 require("nvim-autopairs").setup({})
 require("ibl").setup()
-require("tabout").setup()
+require("tabout").setup({})
 
 -- Telescope settings
 local telescope = require("telescope")
