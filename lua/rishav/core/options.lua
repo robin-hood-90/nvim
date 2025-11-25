@@ -17,6 +17,10 @@ opt.wrap = false
 opt.redrawtime = 10000
 opt.maxmempattern = 20000
 
+-- undo file and undo options
+vim.opt.undofile = true
+vim.opt.undodir = os.getenv("HOME") .. "/.local/share/nvim/undodir"
+
 -- search settings
 opt.ignorecase = true -- ignore case when searching
 opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
