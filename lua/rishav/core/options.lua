@@ -84,10 +84,3 @@ vim.api.nvim_create_autocmd("TermOpen", {
         vim.opt.relativenumber = true
     end,
 })
-
-vim.keymap.set("n", "<C-t>", function()
-    vim.cmd.vsplit()
-    vim.cmd.term()
-    vim.cmd.wincmd("J")
-    vim.api.nvim_win_set_height(0, 12)
-end)
