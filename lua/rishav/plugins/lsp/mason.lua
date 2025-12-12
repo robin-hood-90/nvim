@@ -1,58 +1,58 @@
 return {
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = {
-      -- list of servers for mason to install
-      ensure_installed = {
-        "ts_ls",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "svelte",
-        "lua_ls",
-        "graphql",
-        "emmet_ls",
-        "pyright",
-        "eslint",
-        "gopls",
-        "clangd",
-        "jdtls",
-      },
-    },
-    dependencies = {
-      {
-        "williamboman/mason.nvim",
+    {
+        "williamboman/mason-lspconfig.nvim",
         opts = {
-          ui = {
-            icons = {
-              package_installed = "✓",
-              package_pending = "➜",
-              package_uninstalled = "✗",
+            -- list of servers for mason to install
+            ensure_installed = {
+                "ts_ls",
+                "html",
+                "cssls",
+                "tailwindcss",
+                "svelte",
+                "lua_ls",
+                "graphql",
+                "emmet_ls",
+                "pyright",
+                "eslint",
+                "gopls",
+                "clangd",
+                "jdtls",
             },
-          },
         },
-      },
-      "neovim/nvim-lspconfig",
+        dependencies = {
+            {
+                "williamboman/mason.nvim",
+                opts = {
+                    ui = {
+                        icons = {
+                            package_installed = "✓",
+                            package_pending = "➜",
+                            package_uninstalled = "✗",
+                        },
+                    },
+                },
+            },
+            "neovim/nvim-lspconfig",
+        },
     },
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    opts = {
-      ensure_installed = {
-        "prettier", -- prettier formatter
-        "stylua", -- lua formatter
-        "isort", -- python formatter
-        "black", -- python formatter
-        "pylint",
-        "eslint_d",
-        "xmlformatter",
-        "rust-analyzer",
-        "java-debug-adapter",
-        "java-test",
-      },
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        opts = {
+            ensure_installed = {
+                "prettier", -- prettier formatter
+                "stylua", -- lua formatter
+                "isort", -- python formatter
+                "black", -- python formatter
+                "pylint",
+                "eslint_d",
+                "xmlformatter",
+                "rust-analyzer",
+                "java-debug-adapter",
+                "java-test",
+            },
+        },
+        dependencies = {
+            "williamboman/mason.nvim",
+        },
     },
-    dependencies = {
-      "williamboman/mason.nvim",
-    },
-  },
 }
