@@ -1,27 +1,53 @@
 return {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre", "BufNewFile" },
+    build = ":TSUpdate",
+
     dependencies = {
         "windwp/nvim-ts-autotag",
         {
             "nvim-treesitter/nvim-treesitter-context",
-            opts = { enable = true, mode = "topline", line_numbers = true, multiwindow = true },
+            opts = {
+                enable = true,
+                mode = "topline",
+                line_numbers = true,
+                multiwindow = true,
+            },
         },
     },
-    event = { "BufReadPre", "BufNewFile" },
-    build = ":TSUpdate",
+
     config = function()
-        -- import nvim-treesitter plugin
         local treesitter = require("nvim-treesitter.configs")
+
+        -- autotag setup
         require("nvim-ts-autotag").setup()
 
-        -- configure treesitter
-        treesitter.setup({ -- enable syntax highlighting
+        ---@type TSConfig
+        treesitter.setup({
+            -- REQUIRED FIELDS (for lua_ls)
+            modules = {},
+            sync_install = false,
+            ignore_install = {},
+            auto_install = true,
+
+            -- SYNTAX HIGHLIGHTING
             highlight = {
                 enable = true,
             },
-            -- enable indentation
-            indent = { enable = true },
-            -- ensure these language parsers are installed
+
+            -- INDENTATION
+            indent = {
+                enable = true,
+                disable = {
+                    "javascript",
+                    "typescript",
+                    "tsx",
+                    "javascriptreact",
+                    "typescriptreact",
+                },
+            },
+
+            -- INSTALLED PARSERS
             ensure_installed = {
                 "json",
                 "javascript",
@@ -48,6 +74,8 @@ return {
                 "c",
                 "java",
             },
+
+            -- INCREMENTAL SELECTION
             incremental_selection = {
                 enable = true,
                 keymaps = {
@@ -59,7 +87,7 @@ return {
             },
         })
 
-        -- use bash parser for zsh files
+        -- Use bash parser for zsh files
         vim.treesitter.language.register("bash", "zsh")
     end,
 }
