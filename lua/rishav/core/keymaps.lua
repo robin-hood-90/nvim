@@ -28,9 +28,9 @@ keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) 
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
 
 -- window resize
-keymap.set({ "n", "t" }, "<C-Down>", ":resize -2<CR>", { desc = "resize to down window" })
-keymap.set({ "n", "t" }, "<C-Up>", ":resize +2<CR>", { desc = "resize to top window" })
-keymap.set({ "n", "t" }, "<C-Right>", ":vertical resize -2<CR>", { desc = "resize to right window" })
-keymap.set({ "n", "t" }, "<C-Left>", ":vertical resize +2<CR>", { desc = "resize to left window" })
+keymap.set({ "n", "t" }, "<S-Down>", ":resize -2<CR>", { desc = "resize to down window" })
+keymap.set({ "n", "t" }, "<S-Up>", ":resize +2<CR>", { desc = "resize to top window" })
+keymap.set({ "n", "t" }, "<S-Right>", ":vertical resize +2<CR>", { desc = "resize to right window" })
+keymap.set({ "n", "t" }, "<S-Left>", ":vertical resize -2<CR>", { desc = "resize to left window" })
 
 keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", { desc = "Dismiss Noice Message" })
