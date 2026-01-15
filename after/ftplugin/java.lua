@@ -3,14 +3,7 @@ local workspace_path = home .. "/.local/share/nvim/jdtls-workspace/"
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local workspace_dir = workspace_path .. project_name
 
-local function arginp()
-    return coroutine.create(function(dap_run_co)
-        vim.ui.input({ prompt = "Args: " }, function(argstr)
-            coroutine.resume(dap_run_co, argstr)
-        end)
-    end)
-end
-
+-- Check if jdtls is available
 local status, jdtls = pcall(require, "jdtls")
 if not status then
     return
@@ -47,11 +40,10 @@ if not jdtls_jar then
     return
 end
 
-local extendedClientCapabilities = jdtls.extendedClientCapabilities
+local lombok_jar = home .. "/.local/share/nvim/mason/packages/jdtls/lombok.jar"
 
 -- Build bundles list
 local bundles = {}
-local lombok_jar = home .. "/.local/share/nvim/mason/packages/jdtls/lombok.jar"
 if vim.fn.filereadable(lombok_jar) == 1 then
     table.insert(bundles, lombok_jar)
 end
@@ -68,6 +60,15 @@ if test_jar then
     end
 end
 
+-- Argument input coroutine for DAP
+local function arginp()
+    return coroutine.create(function(dap_run_co)
+        vim.ui.input({ prompt = "Args: " }, function(argstr)
+            coroutine.resume(dap_run_co, argstr)
+        end)
+    end)
+end
+
 -- Safe handler wrapper to prevent invalid buffer errors
 local function safe_handler(handler)
     return function(err, result, ctx, config)
@@ -80,6 +81,10 @@ local function safe_handler(handler)
     end
 end
 
+-- Extended client capabilities for jdtls
+local extendedClientCapabilities = jdtls.extendedClientCapabilities
+
+-- Configuration for jdtls
 local config = {
     cmd = {
         "java",
@@ -191,24 +196,33 @@ local config = {
         },
     },
 
-    -- Add safe handlers to prevent buffer errors
     handlers = {
         ["language/status"] = safe_handler(vim.lsp.handlers["language/status"] or function() end),
         ["$/progress"] = safe_handler(vim.lsp.handlers["$/progress"]),
     },
 
-    on_attach = function(client, bufnr)
+    on_attach = function(_, bufnr)
         -- Only proceed if buffer is valid
         if not vim.api.nvim_buf_is_valid(bufnr) then
             return
         end
 
-        local status_ok, _ = pcall(jdtls.setup_dap, { hotcodereplace = "auto" })
+        -- Setup DAP with proper config_overrides structure
+        local status_ok = pcall(jdtls.setup_dap, {
+            hotcodereplace = "auto",
+            config_overrides = {
+                args = arginp,
+                stepFilters = {
+                    skipClasses = { "java.lang.ClassLoader" },
+                },
+            },
+        })
         if not status_ok then
             vim.notify("Failed to setup DAP for JDTLS", vim.log.levels.WARN)
         end
 
-        local dap_ok, _ = pcall(require("jdtls.dap").setup_dap_main_class_configs, {
+        -- Setup DAP main class configs
+        local dap_ok = pcall(require("jdtls.dap").setup_dap_main_class_configs, {
             config_overrides = {
                 args = arginp,
                 stepFilters = {
@@ -222,6 +236,7 @@ local config = {
 
         -- Set up buffer-local keymaps
         local opts = { buffer = bufnr, silent = true }
+
         vim.keymap.set("n", "<leader>co", function()
             if vim.api.nvim_buf_is_valid(bufnr) then
                 require("jdtls").organize_imports()
@@ -236,9 +251,9 @@ local config = {
 
         vim.keymap.set("v", "<leader>crv", function()
             if vim.api.nvim_buf_is_valid(bufnr) then
-                require("jdtls").extract_variable(true)
+                require("jdtls").extract_variable({ visual = true })
             end
-        end, vim.tbl_extend("force", opts, { desc = "Extract Variable" }))
+        end, vim.tbl_extend("force", opts, { desc = "Extract Variable (Visual)" }))
 
         vim.keymap.set("n", "<leader>crc", function()
             if vim.api.nvim_buf_is_valid(bufnr) then
@@ -248,13 +263,13 @@ local config = {
 
         vim.keymap.set("v", "<leader>crc", function()
             if vim.api.nvim_buf_is_valid(bufnr) then
-                require("jdtls").extract_constant(true)
+                require("jdtls").extract_constant({ visual = true })
             end
-        end, vim.tbl_extend("force", opts, { desc = "Extract Constant" }))
+        end, vim.tbl_extend("force", opts, { desc = "Extract Constant (Visual)" }))
 
         vim.keymap.set("v", "<leader>crm", function()
             if vim.api.nvim_buf_is_valid(bufnr) then
-                require("jdtls").extract_method(true)
+                require("jdtls").extract_method({ visual = true })
             end
         end, vim.tbl_extend("force", opts, { desc = "Extract Method" }))
 
@@ -271,14 +286,14 @@ local config = {
     },
 }
 
-require("jdtls").start_or_attach(config)
-
--- Global keymaps (moved to on_attach for buffer-local scope is better, but keeping these as fallback)
-vim.keymap.set("n", "<leader>co", "<Cmd>lua require'jdtls'.organize_imports()<CR>", { desc = "Organize Imports" })
+-- CRITICAL: Use start_or_attach which respects the LSP system
+-- This will only start if no jdtls client is already attached
+jdtls.start_or_attach(config)
 
 -- Safe codelens refresh on save
 vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = { "*.java" },
+    buffer = vim.api.nvim_get_current_buf(),
     callback = function(ev)
         vim.schedule(function()
             if vim.api.nvim_buf_is_valid(ev.buf) then
@@ -287,12 +302,3 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         end)
     end,
 })
-
--- Optional: Track buffer deletions for debugging
--- Uncomment if you want to debug when buffers are being deleted
--- vim.api.nvim_create_autocmd("BufDelete", {
---   pattern = "*.java",
---   callback = function(args)
---     print("Java buffer deleted:", args.buf)
---   end,
--- })

@@ -1,78 +1,149 @@
 return {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-        "hrsh7th/cmp-buffer", -- source for text in buffer
-        "hrsh7th/cmp-path", -- source for file system paths
-        {
-            "L3MON4D3/LuaSnip",
-            version = "v2.*",
-            build = "make install_jsregexp",
-        },
-        "saadparwaiz1/cmp_luasnip", -- for autocompletion
-        "rafamadriz/friendly-snippets", -- useful snippets
-        "onsails/lspkind.nvim", -- vs-code like pictograms
+    -- Copilot.lua with ghost text (inline suggestions)
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    enabled = true, -- Enable ghost text suggestions
+                    auto_trigger = true, -- Automatically show suggestions
+                    debounce = 75,
+                    accept = function()
+                        -- Only accept if Copilot is enabled and has a suggestion
+                        local ok, copilot = pcall(require, "copilot.suggestion")
+                        if ok and copilot.is_visible() then
+                            copilot.accept()
+                        else
+                            -- Fallback to normal Tab behavior
+                            local key = vim.api.nvim_replace_termcodes("<Tab>", true, false, true)
+                            vim.api.nvim_feedkeys(key, "n", false)
+                        end
+                    end,
+                    accept_word = "<M-w>", -- Alt+w to accept word
+                    accept_line = "<M-j>", -- Alt+j to accept line
+                    next = "<M-]>", -- Alt+] for next suggestion
+                    prev = "<M-[>", -- Alt+[ for previous suggestion
+                    dismiss = "<C-]>", -- Ctrl+] to dismiss
+                },
+                panel = { enabled = false },
+                filetypes = {
+                    yaml = false,
+                    markdown = false,
+                    help = false,
+                    gitcommit = false,
+                    gitrebase = false,
+                    hgcommit = false,
+                    svn = false,
+                    cvs = false,
+                    ["."] = false,
+                },
+            })
+        end,
     },
-    config = function()
-        local cmp = require("cmp")
-        local luasnip = require("luasnip")
-        local lspkind = require("lspkind")
-        -- Load VSCode-style snippets
-        require("luasnip.loaders.from_vscode").lazy_load()
-        cmp.setup({
-            snippet = {
-                expand = function(args)
-                    luasnip.lsp_expand(args.body)
-                end,
+
+    -- nvim-cmp configuration (for LSP, snippets, buffer, path completion)
+    {
+        "hrsh7th/nvim-cmp",
+        event = "InsertEnter",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",
+            {
+                "L3MON4D3/LuaSnip",
+                version = "v2.*",
+                build = "make install_jsregexp",
             },
-            mapping = cmp.mapping.preset.insert({
-                ["<C-k>"] = cmp.mapping.select_prev_item(),
-                ["<C-j>"] = cmp.mapping.select_next_item(),
-                ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ["<C-e>"] = cmp.mapping.abort(),
-                ["<CR>"] = cmp.mapping.confirm({ select = false }),
-                -- Tab only handles snippet jumping when inside a snippet
-                ["<Tab>"] = cmp.mapping(function(fallback)
-                    if luasnip.in_snippet() and luasnip.jumpable(1) then
-                        luasnip.jump(1)
-                    else
-                        fallback() -- Let tabout handle it
-                    end
-                end, { "i", "s" }),
-                -- Shift-Tab only handles snippet jumping when inside a snippet
-                ["<S-Tab>"] = cmp.mapping(function(fallback)
-                    if luasnip.in_snippet() and luasnip.jumpable(-1) then
-                        luasnip.jump(-1)
-                    else
-                        fallback() -- Let tabout handle it
-                    end
-                end, { "i", "s" }),
-            }),
-            sources = cmp.config.sources({
-                { name = "nvim_lsp" },
-                { name = "luasnip" },
-                { name = "buffer" },
-                { name = "path" },
-            }),
-            formatting = {
-                format = lspkind.cmp_format({
-                    maxwidth = 50,
-                    ellipsis_char = "...",
+            "saadparwaiz1/cmp_luasnip",
+            "rafamadriz/friendly-snippets",
+            "onsails/lspkind.nvim",
+        },
+        config = function()
+            local cmp = require("cmp")
+            local luasnip = require("luasnip")
+            local lspkind = require("lspkind")
+
+            -- Load VSCode-style snippets
+            require("luasnip.loaders.from_vscode").lazy_load()
+
+            -- Set completeopt
+            vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+
+                mapping = cmp.mapping.preset.insert({
+                    ["<C-k>"] = cmp.mapping.select_prev_item(),
+                    ["<C-j>"] = cmp.mapping.select_next_item(),
+                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    ["<C-Space>"] = cmp.mapping.complete(),
+                    ["<C-e>"] = cmp.mapping.abort(),
+                    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+                    -- Tab behavior: prioritize cmp menu, then snippets, fallback to default
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.locally_jumpable(1) then
+                            luasnip.jump(1)
+                        else
+                            fallback() -- This will trigger Copilot's Tab accept
+                        end
+                    end, { "i", "s" }),
+
+                    -- Shift-Tab for cmp menu and snippet navigation
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.locally_jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
                 }),
-            },
-            window = {
-                completion = cmp.config.window.bordered({
-                    border = "rounded",
+
+                sources = cmp.config.sources({
+                    { name = "nvim_lsp", group_index = 1 },
+                    { name = "luasnip", group_index = 1 },
+                    { name = "path", group_index = 1 },
+                }, {
+                    { name = "buffer", group_index = 2 },
                 }),
-                documentation = cmp.config.window.bordered({
-                    border = "rounded",
-                }),
-            },
-        })
-        -- Optional: Make the borders visually appealing
-        vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#7aa2f7", bg = "none" })
-        vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-    end,
+
+                formatting = {
+                    format = lspkind.cmp_format({
+                        mode = "symbol",
+                        maxwidth = 50,
+                        ellipsis_char = "...",
+                    }),
+                },
+
+                window = {
+                    completion = cmp.config.window.bordered({
+                        border = "rounded",
+                        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+                    }),
+                    documentation = cmp.config.window.bordered({
+                        border = "rounded",
+                        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+                    }),
+                },
+
+                experimental = {
+                    ghost_text = false, -- Keep disabled to avoid conflicts with copilot ghost text
+                },
+            })
+
+            -- Custom highlights
+            vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#7aa2f7", bg = "none" })
+            vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+        end,
+    },
 }
