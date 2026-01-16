@@ -1,3 +1,5 @@
+---@module "rishav.plugins.nvim-cmp"
+---Completion engine configuration
 return {
     {
         "hrsh7th/nvim-cmp",
@@ -11,21 +13,21 @@ return {
                 "L3MON4D3/LuaSnip",
                 version = "v2.*",
                 build = "make install_jsregexp",
+                dependencies = {
+                    "rafamadriz/friendly-snippets",
+                },
+                config = function()
+                    require("luasnip.loaders.from_vscode").lazy_load()
+                end,
             },
             "saadparwaiz1/cmp_luasnip",
-            "rafamadriz/friendly-snippets",
             "onsails/lspkind.nvim",
         },
         config = function()
             local cmp = require("cmp")
             local luasnip = require("luasnip")
             local lspkind = require("lspkind")
-
-            -- Load VSCode-style snippets
-            require("luasnip.loaders.from_vscode").lazy_load()
-
-            -- Modern completeopt setting
-            vim.opt.completeopt = { "menu", "menuone", "noinsert", "preview" }
+            local icons = require("rishav.core.icons")
 
             cmp.setup({
                 snippet = {
@@ -47,26 +49,30 @@ return {
                 },
 
                 mapping = cmp.mapping.preset.insert({
+                    -- Navigation
                     ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
                     ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+
+                    -- Scrolling docs
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
+
+                    -- Trigger completion
                     ["<C-Space>"] = cmp.mapping.complete(),
+
+                    -- Abort
                     ["<C-e>"] = cmp.mapping.abort(),
+
+                    -- Confirm selection
                     ["<CR>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            if cmp.get_selected_entry() then
-                                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-                            else
-                                fallback()
-                            end
+                        if cmp.visible() and cmp.get_selected_entry() then
+                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
                         else
                             fallback()
                         end
                     end, { "i", "s" }),
 
-                    -- Tab/S-Tab for navigation only when cmp menu is visible
-                    -- Copilot handles Tab when menu is not visible (see copilot.lua)
+                    -- Tab for navigation and snippet jumping
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -89,7 +95,7 @@ return {
                 }),
 
                 sources = cmp.config.sources({
-                    { name = "lazydev", group_index = 0 }, -- set group index to 0 to skip loading LuaLS completions
+                    { name = "lazydev", group_index = 0 },
                     { name = "nvim_lsp", priority = 1000, max_item_count = 30 },
                     { name = "luasnip", priority = 750, max_item_count = 10 },
                     { name = "path", priority = 500 },
@@ -99,8 +105,8 @@ return {
                         priority = 250,
                         max_item_count = 10,
                         option = {
-                            -- Only get completions from visible buffers (more performant)
                             get_bufnrs = function()
+                                -- Only visible buffers (performance optimization)
                                 local bufs = {}
                                 for _, win in ipairs(vim.api.nvim_list_wins()) do
                                     bufs[vim.api.nvim_win_get_buf(win)] = true
@@ -133,8 +139,8 @@ return {
                         maxwidth = 50,
                         ellipsis_char = "...",
                         show_labelDetails = true,
+                        symbol_map = icons.kinds,
                         before = function(entry, vim_item)
-                            -- Show source in menu
                             vim_item.menu = ({
                                 nvim_lsp = "[LSP]",
                                 luasnip = "[Snip]",
@@ -163,11 +169,11 @@ return {
                 },
 
                 experimental = {
-                    ghost_text = false, -- Disabled to avoid conflicts with Copilot ghost text
+                    ghost_text = false, -- Disabled for Copilot compatibility
                 },
             })
 
-            -- Cmdline setup for '/' and '?' (search)
+            -- Cmdline setup for search
             cmp.setup.cmdline({ "/", "?" }, {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = {
@@ -175,7 +181,7 @@ return {
                 },
             })
 
-            -- Cmdline setup for ':' (commands)
+            -- Cmdline setup for commands
             cmp.setup.cmdline(":", {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources({

@@ -1,195 +1,103 @@
+---@module "rishav.plugins.lualine"
+---Statusline configuration - minimal but informative
+local icons = require("rishav.core.icons")
+
 return {
     "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-        local lualine = require("lualine")
+    opts = function()
         local lazy_status = require("lazy.status")
 
-        -- Vibrant color palette
-        local colors = {
-            blue = "#61AFEF",
-            cyan = "#56B6C2",
-            green = "#98C379",
-            violet = "#C678DD",
-            magenta = "#E06C75",
-            yellow = "#E5C07B",
-            orange = "#D19A66",
-            red = "#E86671",
-            fg = "#ABB2BF",
-            bg = "#1E222A",
-            bg_light = "#2C323C",
-            gray = "#5C6370",
-        }
-
-        -- Custom theme with smooth gradients
-        local my_lualine_theme = {
-            normal = {
-                a = { bg = colors.blue, fg = colors.bg, gui = "bold" },
-                b = { bg = colors.bg_light, fg = colors.blue },
-                c = { bg = colors.bg, fg = colors.fg },
-            },
-            insert = {
-                a = { bg = colors.green, fg = colors.bg, gui = "bold" },
-                b = { bg = colors.bg_light, fg = colors.green },
-                c = { bg = colors.bg, fg = colors.fg },
-            },
-            visual = {
-                a = { bg = colors.violet, fg = colors.bg, gui = "bold" },
-                b = { bg = colors.bg_light, fg = colors.violet },
-                c = { bg = colors.bg, fg = colors.fg },
-            },
-            command = {
-                a = { bg = colors.yellow, fg = colors.bg, gui = "bold" },
-                b = { bg = colors.bg_light, fg = colors.yellow },
-                c = { bg = colors.bg, fg = colors.fg },
-            },
-            replace = {
-                a = { bg = colors.red, fg = colors.bg, gui = "bold" },
-                b = { bg = colors.bg_light, fg = colors.red },
-                c = { bg = colors.bg, fg = colors.fg },
-            },
-            inactive = {
-                a = { bg = colors.bg_light, fg = colors.gray },
-                b = { bg = colors.bg, fg = colors.gray },
-                c = { bg = colors.bg, fg = colors.gray },
-            },
-        }
-
-        -- Custom components for extra flair
-        local mode_icons = {
-            n = "󰋜 ",
-            i = "󰏫 ",
-            v = "󰈈 ",
-            V = "󰈈 ",
-            [""] = "󰈈 ",
-            c = " ",
-            R = "󰛔 ",
-            t = " ",
-        }
-
-        local function mode_with_icon()
-            local mode = vim.fn.mode()
-            return (mode_icons[mode] or "󰋜 ") .. require("lualine.utils.mode").get_mode()
+        -- Helper to show attached LSP clients
+        local function lsp_clients()
+            local clients = vim.lsp.get_clients({ bufnr = 0 })
+            if #clients == 0 then
+                return ""
+            end
+            local names = {}
+            for _, client in ipairs(clients) do
+                if client.name ~= "copilot" then -- Hide copilot from LSP list
+                    table.insert(names, client.name)
+                end
+            end
+            if #names == 0 then
+                return ""
+            end
+            return " " .. table.concat(names, ", ")
         end
 
-        lualine.setup({
+        return {
             options = {
-                theme = my_lualine_theme,
-                icons_enabled = true,
+                theme = "catppuccin",
+                globalstatus = true,
                 component_separators = { left = "", right = "" },
                 section_separators = { left = "", right = "" },
-                always_divide_middle = true,
-                globalstatus = true,
+                disabled_filetypes = {
+                    statusline = { "dashboard", "alpha", "starter", "lazy" },
+                },
             },
             sections = {
                 lualine_a = {
-                    {
-                        mode_with_icon,
-                        separator = { right = "" },
-                        padding = { left = 1, right = 1 },
-                    },
+                    { "mode", icon = "" },
                 },
                 lualine_b = {
-                    {
-                        "branch",
-                        icon = "",
-                        color = { fg = colors.violet, gui = "bold" },
-                    },
-                    {
-                        "diff",
-                        symbols = { added = " ", modified = " ", removed = " " },
-                        diff_color = {
-                            added = { fg = colors.green },
-                            modified = { fg = colors.orange },
-                            removed = { fg = colors.red },
-                        },
-                    },
-                    {
-                        "diagnostics",
-                        sources = { "nvim_diagnostic" },
-                        symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
-                        diagnostics_color = {
-                            error = { fg = colors.red },
-                            warn = { fg = colors.yellow },
-                            info = { fg = colors.cyan },
-                            hint = { fg = colors.violet },
-                        },
-                    },
+                    { "branch", icon = icons.git.branch },
                 },
                 lualine_c = {
                     {
-                        "filename",
-                        file_status = true,
-                        path = 1,
+                        "diagnostics",
                         symbols = {
-                            modified = " 󰷥",
-                            readonly = " ",
-                            unnamed = " [No Name]",
-                            newfile = " 󰎔",
+                            error = icons.diagnostics.Error,
+                            warn = icons.diagnostics.Warn,
+                            info = icons.diagnostics.Info,
+                            hint = icons.diagnostics.Hint,
                         },
-                        color = { fg = colors.cyan, gui = "italic" },
+                    },
+                    { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+                    {
+                        "filename",
+                        path = 1, -- Relative path
+                        symbols = { modified = "  ", readonly = " ", unnamed = "[No Name]" },
                     },
                 },
                 lualine_x = {
                     {
                         lazy_status.updates,
                         cond = lazy_status.has_updates,
-                        icon = "󰚰 ",
-                        color = { fg = colors.orange, gui = "bold" },
+                        color = { fg = "#ff9e64" },
                     },
                     {
-                        "encoding",
-                        icon = "󰉿",
-                        color = { fg = colors.gray },
-                    },
-                    {
-                        "fileformat",
+                        "diff",
                         symbols = {
-                            unix = "",
-                            dos = "",
-                            mac = "",
+                            added = icons.git.added,
+                            modified = icons.git.modified,
+                            removed = icons.git.removed,
                         },
-                        color = { fg = colors.gray },
-                    },
-                    {
-                        "filetype",
-                        icon_only = false,
-                        colored = true,
                     },
                 },
                 lualine_y = {
-                    {
-                        "progress",
-                        icon = "󰓎",
-                        color = { fg = colors.violet },
-                    },
+                    { lsp_clients },
+                    { "progress", separator = " ", padding = { left = 1, right = 0 } },
+                    { "location", padding = { left = 0, right = 1 } },
                 },
                 lualine_z = {
                     {
-                        "location",
-                        icon = "󰆧",
-                        separator = { left = "" },
-                        padding = { left = 1, right = 1 },
+                        function()
+                            return " " .. os.date("%H:%M")
+                        end,
                     },
                 },
             },
             inactive_sections = {
                 lualine_a = {},
                 lualine_b = {},
-                lualine_c = {
-                    {
-                        "filename",
-                        file_status = true,
-                        path = 1,
-                        color = { fg = colors.gray },
-                    },
-                },
-                lualine_x = { { "location", color = { fg = colors.gray } } },
+                lualine_c = { { "filename", path = 1 } },
+                lualine_x = { "location" },
                 lualine_y = {},
                 lualine_z = {},
             },
-            tabline = {},
-            extensions = { "nvim-tree", "lazy", "mason" },
-        })
+            extensions = { "neo-tree", "nvim-tree", "lazy", "mason", "trouble", "quickfix" },
+        }
     end,
 }

@@ -1,58 +1,75 @@
+---@module "rishav.plugins.lsp.mason"
+---Mason and LSP server management
+local icons = require("rishav.core.icons")
+
 return {
+    -- Mason LSP Config
     {
         "williamboman/mason-lspconfig.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = {
+            {
+                "williamboman/mason.nvim",
+                cmd = "Mason",
+                build = ":MasonUpdate",
+                opts = {
+                    ui = {
+                        border = "rounded",
+                        icons = icons.mason,
+                        height = 0.8,
+                    },
+                    max_concurrent_installers = 4,
+                },
+            },
+            "neovim/nvim-lspconfig",
+        },
         opts = {
-            -- list of servers for mason to install
             ensure_installed = {
+                -- Web
                 "ts_ls",
                 "html",
                 "cssls",
                 "tailwindcss",
                 "svelte",
-                "lua_ls",
-                "graphql",
                 "emmet_ls",
-                "pyright",
                 "eslint",
+                "graphql",
+                -- Languages
+                "lua_ls",
+                "pyright",
                 "gopls",
                 "clangd",
                 "jdtls",
             },
-        },
-        dependencies = {
-            {
-                "williamboman/mason.nvim",
-                opts = {
-                    ui = {
-                        icons = {
-                            package_installed = "✓",
-                            package_pending = "➜",
-                            package_uninstalled = "✗",
-                        },
-                    },
-                },
-            },
-            "neovim/nvim-lspconfig",
+            automatic_installation = true,
         },
     },
+
+    -- Mason Tool Installer (formatters, linters, debuggers)
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
+        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
+        dependencies = { "williamboman/mason.nvim" },
         opts = {
             ensure_installed = {
-                "prettier", -- prettier formatter
-                "stylua", -- lua formatter
-                "isort", -- python formatter
-                "black", -- python formatter
+                -- Formatters
+                "prettier",
+                "stylua",
+                "isort",
+                "black",
+                "xmlformatter",
+                -- Linters
                 "pylint",
                 "eslint_d",
-                "xmlformatter",
+                -- Language servers/tools
                 "rust-analyzer",
+                -- Debuggers
                 "java-debug-adapter",
                 "java-test",
             },
-        },
-        dependencies = {
-            "williamboman/mason.nvim",
+            auto_update = false,
+            run_on_start = true,
+            start_delay = 3000, -- Delay to not block startup
         },
     },
 }

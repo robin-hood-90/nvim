@@ -1,3 +1,5 @@
+---@module "rishav.plugins.lsp.lsp"
+---LSP configuration
 return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -9,25 +11,29 @@ return {
             ft = "lua",
             opts = {
                 library = {
-                    -- Load luvit types when the `vim.uv` word is found
                     { path = "${3rd}/luv/library", words = { "vim%.uv" } },
                 },
             },
         },
     },
     config = function()
-        -- Import cmp-nvim-lsp plugin
         local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-        -- Used to enable autocompletion (assign to every lsp server config)
+        -- Get capabilities from cmp-nvim-lsp
         local capabilities = cmp_nvim_lsp.default_capabilities()
+
+        -- Add folding capabilities for nvim-ufo
+        capabilities.textDocument.foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true,
+        }
 
         -- Configure LSP defaults for all servers
         vim.lsp.config("*", {
             capabilities = capabilities,
         })
 
-        -- Disable jdtls as it's configured separately
+        -- Disable jdtls (configured separately via ftplugin)
         vim.lsp.enable("jdtls", false)
     end,
 }
