@@ -1,49 +1,4 @@
 return {
-    -- Copilot.lua with ghost text (inline suggestions)
-    {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    enabled = true, -- Enable ghost text suggestions
-                    auto_trigger = true, -- Automatically show suggestions
-                    debounce = 75,
-                    accept = function()
-                        -- Only accept if Copilot is enabled and has a suggestion
-                        local ok, copilot = pcall(require, "copilot.suggestion")
-                        if ok and copilot.is_visible() then
-                            copilot.accept()
-                        else
-                            -- Fallback to normal Tab behavior
-                            local key = vim.api.nvim_replace_termcodes("<Tab>", true, false, true)
-                            vim.api.nvim_feedkeys(key, "n", false)
-                        end
-                    end,
-                    accept_word = "<M-w>", -- Alt+w to accept word
-                    accept_line = "<M-j>", -- Alt+j to accept line
-                    next = "<M-]>", -- Alt+] for next suggestion
-                    prev = "<M-[>", -- Alt+[ for previous suggestion
-                    dismiss = "<C-]>", -- Ctrl+] to dismiss
-                },
-                panel = { enabled = false },
-                filetypes = {
-                    yaml = false,
-                    markdown = false,
-                    help = false,
-                    gitcommit = false,
-                    gitrebase = false,
-                    hgcommit = false,
-                    svn = false,
-                    cvs = false,
-                    ["."] = false,
-                },
-            })
-        end,
-    },
-
-    -- nvim-cmp configuration (for LSP, snippets, buffer, path completion)
     {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
