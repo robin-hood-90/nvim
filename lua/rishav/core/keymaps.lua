@@ -5,7 +5,7 @@ local keymap = vim.keymap
 
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 keymap.set("t", "jk", "<C-\\><C-n>", { desc = "Exit terminal mode with jk" })
-keymap.set("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit", silent = true })
+keymap.set("n", "<leader>q", "<cmd>q!<CR>", { desc = "Quit", silent = true })
 keymap.set("n", "<leader>w", "<cmd>wa<CR>", { desc = "Save all", silent = true })
 
 -- Better movement on wrapped lines
