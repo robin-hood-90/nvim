@@ -1,13 +1,13 @@
 return {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
-    event = "InsertEnter",
+    event = "VeryLazy", -- Load earlier in background instead of waiting for InsertEnter
     config = function()
         require("copilot").setup({
             suggestion = {
                 enabled = true,
                 auto_trigger = true,
-                debounce = 75,
+                debounce = 50, -- Faster response
                 keymap = {
                     accept = false,
                     accept_word = false,
@@ -24,10 +24,11 @@ return {
                 help = false,
                 gitcommit = false,
                 gitrebase = false,
-                hgcommit = false,
-                svn = false,
-                cvs = false,
                 ["."] = false,
+            },
+            -- Copilot server options
+            server_opts_overrides = {
+                trace = "off", -- Disable tracing for performance
             },
         })
 

@@ -21,10 +21,6 @@ map("n", "<leader>nh", "<cmd>nohl<CR>", { desc = "Clear search highlights" })
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down" })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up" })
 
--- Quick line navigation
-map({ "n", "x", "o" }, "H", "^", { desc = "Start of line" })
-map({ "n", "x", "o" }, "L", "$", { desc = "End of line" })
-
 -- Keep cursor centered
 map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down centered" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up centered" })
