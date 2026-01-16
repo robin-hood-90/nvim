@@ -9,6 +9,10 @@ if not status then
     return
 end
 
+-- This ftplugin runs for every Java buffer. jdtls.start_or_attach() handles
+-- starting a new client or attaching to an existing one automatically.
+-- We don't need manual client tracking - nvim-jdtls does this internally.
+
 -- Helper function to find JAR files
 local function get_jdtls_jar()
     local jar =
@@ -201,38 +205,14 @@ local config = {
         ["$/progress"] = safe_handler(vim.lsp.handlers["$/progress"]),
     },
 
-    on_attach = function(_, bufnr)
+    on_attach = function(client, bufnr)
         -- Only proceed if buffer is valid
         if not vim.api.nvim_buf_is_valid(bufnr) then
             return
         end
 
-        -- Setup DAP with proper config_overrides structure
-        local status_ok = pcall(jdtls.setup_dap, {
-            hotcodereplace = "auto",
-            config_overrides = {
-                args = arginp,
-                stepFilters = {
-                    skipClasses = { "java.lang.ClassLoader" },
-                },
-            },
-        })
-        if not status_ok then
-            vim.notify("Failed to setup DAP for JDTLS", vim.log.levels.WARN)
-        end
-
-        -- Setup DAP main class configs
-        local dap_ok = pcall(require("jdtls.dap").setup_dap_main_class_configs, {
-            config_overrides = {
-                args = arginp,
-                stepFilters = {
-                    skipClasses = { "java.lang.ClassLoader" },
-                },
-            },
-        })
-        if not dap_ok then
-            vim.notify("Failed to setup DAP main class configs", vim.log.levels.WARN)
-        end
+        -- NOTE: DAP setup is handled via the `dap` option passed to start_or_attach
+        -- which ensures it only runs once per client, not per buffer attachment
 
         -- Set up buffer-local keymaps
         local opts = { buffer = bufnr, silent = true }
@@ -286,13 +266,23 @@ local config = {
     },
 }
 
--- CRITICAL: Use start_or_attach which respects the LSP system
--- This will only start if no jdtls client is already attached
-jdtls.start_or_attach(config)
+-- CRITICAL: Use start_or_attach which handles client management internally
+-- This function will either start a new client or attach the buffer to an existing one
+-- Pass dap options to let nvim-jdtls handle DAP setup (only once per client)
+jdtls.start_or_attach(config, {
+    dap = {
+        hotcodereplace = "auto",
+        config_overrides = {
+            args = arginp,
+            stepFilters = {
+                skipClasses = { "java.lang.ClassLoader" },
+            },
+        },
+    },
+})
 
--- Safe codelens refresh on save
+-- Safe codelens refresh on save (use buffer only, not pattern)
 vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = { "*.java" },
     buffer = vim.api.nvim_get_current_buf(),
     callback = function(ev)
         vim.schedule(function()

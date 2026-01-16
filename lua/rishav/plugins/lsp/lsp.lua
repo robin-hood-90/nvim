@@ -28,12 +28,10 @@ return {
             lineFoldingOnly = true,
         }
 
-        -- Configure LSP defaults for all servers
         vim.lsp.config("*", {
             capabilities = capabilities,
         })
 
-        -- Disable jdtls (configured separately via ftplugin)
         vim.lsp.enable("jdtls", false)
     end,
 }
