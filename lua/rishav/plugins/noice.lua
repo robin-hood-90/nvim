@@ -22,7 +22,7 @@ return {
     opts = {
         cmdline = {
             enabled = true,
-            view = "cmdline", -- Use bottom cmdline instead of popup
+            view = "cmdline_popup",
             format = {
                 cmdline = { pattern = "^:", icon = " ", lang = "vim" },
                 search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
@@ -75,13 +75,45 @@ return {
             },
         },
         presets = {
-            bottom_search = true,
-            command_palette = false, -- Disable floating cmdline
+            bottom_search = false,
+            command_palette = false,
             long_message_to_split = true,
             lsp_doc_border = true,
             inc_rename = true,
         },
         views = {
+            cmdline_popup = {
+                position = {
+                    row = "40%",
+                    col = "50%",
+                },
+                size = {
+                    width = 60,
+                    height = "auto",
+                },
+                border = {
+                    style = "rounded",
+                    padding = { 0, 1 },
+                },
+                win_options = {
+                    winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+                },
+            },
+            popupmenu = {
+                relative = "editor",
+                position = {
+                    row = "45%",
+                    col = "50%",
+                },
+                size = {
+                    width = 60,
+                    height = 10,
+                },
+                border = {
+                    style = "rounded",
+                    padding = { 0, 1 },
+                },
+            },
             mini = {
                 win_options = {
                     winblend = 0,
