@@ -14,7 +14,7 @@ return {
                     accept_line = false,
                     next = "<M-]>",
                     prev = "<M-[>",
-                    dismiss = "<C-e>",
+                    dismiss = "<C-]>",
                 },
             },
             panel = { enabled = false },
@@ -33,9 +33,22 @@ return {
 
         -- Custom Tab mapping with safety check
         vim.keymap.set("i", "<Tab>", function()
-            local copilot = require("copilot.suggestion")
+            -- Check if nvim-cmp menu is visible first
+            local cmp_ok, cmp = pcall(require, "cmp")
+            if cmp_ok and cmp.visible() then
+                cmp.select_next_item()
+                return
+            end
 
-            -- Check if Copilot is initialized and has a visible suggestion
+            -- Check for luasnip
+            local luasnip_ok, luasnip = pcall(require, "luasnip")
+            if luasnip_ok and luasnip.locally_jumpable(1) then
+                luasnip.jump(1)
+                return
+            end
+
+            -- Check if Copilot has a suggestion
+            local copilot = require("copilot.suggestion")
             local ok, is_visible = pcall(copilot.is_visible)
 
             if ok and is_visible then
@@ -44,6 +57,6 @@ return {
                 -- Fallback to default Tab behavior
                 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
             end
-        end, { desc = "Accept Copilot suggestion or insert Tab" })
+        end, { desc = "Accept Copilot suggestion or use cmp/snippet/tab" })
     end,
 }
