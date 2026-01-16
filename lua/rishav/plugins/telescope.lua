@@ -2,7 +2,7 @@
 ---Fuzzy finder configuration
 return {
     "nvim-telescope/telescope.nvim",
-    branch = "0.1.x",
+    branch = "master",
     cmd = "Telescope",
     dependencies = {
         "nvim-lua/plenary.nvim",

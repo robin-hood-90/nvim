@@ -175,7 +175,26 @@ return {
 
             -- Cmdline setup for search
             cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline(),
+                mapping = cmp.mapping.preset.cmdline({
+                    ["<Tab>"] = {
+                        c = function()
+                            if cmp.visible() then
+                                cmp.confirm({ select = true })
+                            else
+                                cmp.complete()
+                            end
+                        end,
+                    },
+                    ["<S-Tab>"] = {
+                        c = function()
+                            if cmp.visible() then
+                                cmp.select_prev_item()
+                            else
+                                cmp.complete()
+                            end
+                        end,
+                    },
+                }),
                 sources = {
                     { name = "buffer" },
                 },
@@ -183,7 +202,26 @@ return {
 
             -- Cmdline setup for commands
             cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
+                mapping = cmp.mapping.preset.cmdline({
+                    ["<Tab>"] = {
+                        c = function()
+                            if cmp.visible() then
+                                cmp.confirm({ select = true })
+                            else
+                                cmp.complete()
+                            end
+                        end,
+                    },
+                    ["<S-Tab>"] = {
+                        c = function()
+                            if cmp.visible() then
+                                cmp.select_prev_item()
+                            else
+                                cmp.complete()
+                            end
+                        end,
+                    },
+                }),
                 sources = cmp.config.sources({
                     { name = "path" },
                 }, {

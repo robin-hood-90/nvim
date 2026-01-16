@@ -6,21 +6,44 @@ return {
         {
             "rcarriga/nvim-notify",
             opts = {
-                timeout = 3000,
+                timeout = 2500,
                 max_height = function()
-                    return math.floor(vim.o.lines * 0.75)
+                    return math.floor(vim.o.lines * 0.5)
                 end,
                 max_width = function()
-                    return math.floor(vim.o.columns * 0.75)
+                    return math.floor(vim.o.columns * 0.5)
                 end,
-                on_open = function(win)
-                    vim.api.nvim_win_set_config(win, { zindex = 100 })
-                end,
+                render = "wrapped-compact",
+                stages = "fade",
+                top_down = false,
             },
         },
     },
     opts = {
+        cmdline = {
+            enabled = true,
+            view = "cmdline", -- Use bottom cmdline instead of popup
+            format = {
+                cmdline = { pattern = "^:", icon = " ", lang = "vim" },
+                search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
+                search_up = { kind = "search", pattern = "^%?", icon = "  ", lang = "regex" },
+                filter = { pattern = "^:%s*!", icon = " $", lang = "bash" },
+                lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = " ", lang = "lua" },
+                help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋖 " },
+            },
+        },
+        messages = {
+            enabled = true,
+            view = "mini",
+            view_error = "mini",
+            view_warn = "mini",
+        },
+        popupmenu = {
+            enabled = true,
+            backend = "nui",
+        },
         lsp = {
+            progress = { enabled = true },
             override = {
                 ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
                 ["vim.lsp.util.stylize_markdown"] = true,
@@ -30,6 +53,7 @@ return {
             signature = { enabled = true },
         },
         routes = {
+            -- Hide written messages
             {
                 filter = {
                     event = "msg_show",
@@ -37,33 +61,38 @@ return {
                         { find = "%d+L, %d+B" },
                         { find = "; after #%d+" },
                         { find = "; before #%d+" },
+                        { find = "fewer lines" },
+                        { find = "more lines" },
+                        { find = "^E486:" }, -- Pattern not found
                     },
                 },
-                view = "mini",
+                opts = { skip = true },
+            },
+            -- Show macro recording
+            {
+                view = "notify",
+                filter = { event = "msg_showmode" },
             },
         },
         presets = {
             bottom_search = true,
-            command_palette = true,
+            command_palette = false, -- Disable floating cmdline
             long_message_to_split = true,
             lsp_doc_border = true,
+            inc_rename = true,
+        },
+        views = {
+            mini = {
+                win_options = {
+                    winblend = 0,
+                },
+            },
         },
     },
     keys = {
-        { "<leader>nd", "<cmd>NoiceDismiss<CR>", desc = "Dismiss Noice Message" },
-        {
-            "<leader>nl",
-            function()
-                require("noice").cmd("last")
-            end,
-            desc = "Noice Last Message",
-        },
-        {
-            "<leader>nh",
-            function()
-                require("noice").cmd("history")
-            end,
-            desc = "Noice History",
-        },
+        { "<leader>nd", "<cmd>NoiceDismiss<CR>", desc = "Dismiss notifications" },
+        { "<leader>nl", function() require("noice").cmd("last") end, desc = "Last message" },
+        { "<leader>nh", function() require("noice").cmd("history") end, desc = "Message history" },
+        { "<leader>na", function() require("noice").cmd("all") end, desc = "All messages" },
     },
 }

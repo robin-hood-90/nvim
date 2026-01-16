@@ -32,6 +32,15 @@ return {
             capabilities = capabilities,
         })
 
+        -- Disable jdtls auto-start (handled by nvim-jdtls in ftplugin/java.lua)
+        -- This must be called before any other plugin enables it
         vim.lsp.enable("jdtls", false)
+
+        -- Also configure jdtls to not auto-attach
+        vim.lsp.config("jdtls", {
+            autostart = false,
+            -- Return empty root_dir to prevent starting
+            root_dir = function() return nil end,
+        })
     end,
 }
