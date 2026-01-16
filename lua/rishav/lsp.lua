@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
 
         -- Toggle inlay hints (if supported)
-        if client and client.supports_method("textDocument/inlayHint") then
+        if client and client:supports_method("textDocument/inlayHint", buf) then
             opts.desc = "Toggle inlay hints"
             keymap.set("n", "<leader>ih", function()
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = buf }))
