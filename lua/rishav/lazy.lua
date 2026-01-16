@@ -29,7 +29,7 @@ require("lazy").setup({
         lazy = false,
         version = false, -- always use the latest git commit
     },
-    install = { colorscheme = { "vague", "habamax" } },
+    install = { colorscheme = { "catppuccin", "habamax" } },
     checker = {
         enabled = true,
         notify = false,

@@ -27,14 +27,14 @@ return {
             -- Modern completeopt setting
             vim.opt.completeopt = { "menu", "menuone", "noinsert", "preview" }
 
-            ---@type cmp.ConfigSchema
-            local config = {
+            cmp.setup({
                 snippet = {
                     expand = function(args)
                         luasnip.lsp_expand(args.body)
                     end,
                 },
 
+                ---@diagnostic disable-next-line: missing-fields
                 performance = {
                     debounce = 60,
                     throttle = 30,
@@ -151,12 +151,12 @@ return {
                 window = {
                     completion = cmp.config.window.bordered({
                         border = "rounded",
-                        winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+                        winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
                         scrollbar = true,
                     }),
                     documentation = cmp.config.window.bordered({
                         border = "rounded",
-                        winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+                        winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
                         max_width = 80,
                         max_height = 20,
                     }),
@@ -165,9 +165,7 @@ return {
                 experimental = {
                     ghost_text = false, -- Disabled to avoid conflicts with Copilot ghost text
                 },
-            }
-
-            cmp.setup(config)
+            })
 
             -- Cmdline setup for '/' and '?' (search)
             cmp.setup.cmdline({ "/", "?" }, {
@@ -185,7 +183,10 @@ return {
                 }, {
                     { name = "cmdline", option = { ignore_cmds = { "Man", "!" } } },
                 }),
-                matching = { disallow_symbol_nonprefix_matching = false },
+                ---@diagnostic disable-next-line: missing-fields
+                matching = {
+                    disallow_symbol_nonprefix_matching = false,
+                },
             })
         end,
     },
