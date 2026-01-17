@@ -115,11 +115,6 @@ vim.diagnostic.config({
     signs = icons.get_diagnostic_signs(),
 })
 
--- Configure floating windows with rounded borders
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-    border = "rounded",
-})
-
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-    border = "rounded",
-})
+-- Configure floating windows with rounded borders (Neovim 0.11+)
+-- Uses the new 'winborder' option instead of deprecated vim.lsp.with()
+vim.o.winborder = "rounded"

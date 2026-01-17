@@ -27,7 +27,7 @@ return {
             { "<leader>n", group = "Notifications" },
             { "<leader>r", group = "Rename/Replace" },
             { "<leader>s", group = "Split/Window" },
-            { "<leader>t", group = "Tab/Terminal" },
+            { "<leader>t", group = "Tab" },
             { "<leader>u", group = "UI/Toggle" },
             { "<leader>x", group = "Trouble/Quickfix" },
 

@@ -26,7 +26,6 @@ map("n", "<leader>W", "<cmd>wa<CR>", { desc = "Save all" })
 map("n", "<Esc>", "<cmd>nohl<CR>", { desc = "Clear highlights" })
 
 -- Quick access (no leader needed for frequent ops)
-map("n", "<CR>", "ciw", { desc = "Change inner word" })
 map("n", "<BS>", "X", { desc = "Delete char before" })
 
 --------------------------------------------------------------------------------
@@ -133,29 +132,22 @@ map("n", "<leader>s>", "<cmd>vertical resize +4<CR>", { desc = "Increase width" 
 map("n", "<leader>s<", "<cmd>vertical resize -4<CR>", { desc = "Decrease width" })
 
 --------------------------------------------------------------------------------
--- Buffers (Shift+H/L - easy to reach, like H/L for line navigation)
+-- Tabs (josean-dev style - tabs shown in bufferline, buffers managed within)
+-- Tabs = workspaces/contexts, Buffers = files within a workspace
 --------------------------------------------------------------------------------
-map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
-map("n", "<leader>bD", "<cmd>bdelete!<CR>", { desc = "Force delete buffer" })
-map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "New buffer" })
-map("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-map("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-map("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader><Tab>", "<cmd>e #<CR>", { desc = "Alternate buffer" })
+map("n", "<leader>to", "<cmd>tabnew<CR>", { desc = "Open new tab" })
+map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" })
+map("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" })
+map("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" })
+map("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" })
 
 --------------------------------------------------------------------------------
--- Tabs (bracket navigation + leader shortcuts)
+-- Buffers (files within current tab)
 --------------------------------------------------------------------------------
-map("n", "<leader>tn", "<cmd>tabnew<CR>", { desc = "New tab" })
-map("n", "<leader>tc", "<cmd>tabclose<CR>", { desc = "Close tab" })
-map("n", "<leader>tO", "<cmd>tabonly<CR>", { desc = "Close other tabs" })
-map("n", "[t", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
-map("n", "]t", "<cmd>tabnext<CR>", { desc = "Next tab" })
-map("n", "<leader>t1", "1gt", { desc = "Go to tab 1" })
-map("n", "<leader>t2", "2gt", { desc = "Go to tab 2" })
-map("n", "<leader>t3", "3gt", { desc = "Go to tab 3" })
-map("n", "<leader>t4", "4gt", { desc = "Go to tab 4" })
+-- map("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+-- map("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+map("n", "<leader><Tab>", "<cmd>e #<CR>", { desc = "Alternate buffer" })
 
 --------------------------------------------------------------------------------
 -- Quickfix / Location List (use Trouble mainly, these are fallbacks)
