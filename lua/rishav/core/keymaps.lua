@@ -110,7 +110,7 @@ map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], {
 map("n", "<leader>sv", "<C-w>v", { desc = "Split vertical" })
 map("n", "<leader>sh", "<C-w>s", { desc = "Split horizontal" })
 map("n", "<leader>se", "<C-w>=", { desc = "Equal size splits" })
-map("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
+map("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close split" })
 map("n", "<leader>so", "<cmd>only<CR>", { desc = "Close other splits" })
 map("n", "<leader>sr", "<C-w>r", { desc = "Rotate splits" })
 

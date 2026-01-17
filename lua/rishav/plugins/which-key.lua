@@ -42,11 +42,11 @@ return {
             { "<leader><leader>", desc = "Resume picker" },
 
             -- Harpoon quick access (number keys)
-            { "<leader>1", desc = "Harpoon 1" },
-            { "<leader>2", desc = "Harpoon 2" },
-            { "<leader>3", desc = "Harpoon 3" },
-            { "<leader>4", desc = "Harpoon 4" },
-            { "<leader>5", desc = "Harpoon 5" },
+            { "<M-1>", desc = "Harpoon 1" },
+            { "<M-2>", desc = "Harpoon 2" },
+            { "<M-3>", desc = "Harpoon 3" },
+            { "<M-4>", desc = "Harpoon 4" },
+            { "<M-5>", desc = "Harpoon 5" },
 
             -- Bracket motions help
             { "[", group = "Prev" },
