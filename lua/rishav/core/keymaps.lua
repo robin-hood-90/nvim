@@ -193,7 +193,7 @@ map("c", "<C-k>", "<Up>", { silent = false, desc = "Previous history" })
 -- Add undo break-points
 map("i", ",", ",<C-g>u")
 map("i", ".", ".<C-g>u")
-map("i", ";", ";<C-g>u")
+-- map("i", ";", ";<C-g>u")
 map("i", "!", "!<C-g>u")
 map("i", "?", "?<C-g>u")
 
