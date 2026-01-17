@@ -19,8 +19,6 @@ return {
     -- stylua: ignore
     keys = {
         -- Using gJ/gS for split/join (g prefix for "go" / transform operations)
-        { "gJ", function() require("treesj").join() end, desc = "Join code block" },
-        { "gS", function() require("treesj").split() end, desc = "Split code block" },
         { "<leader>cj", function() require("treesj").toggle() end, desc = "Toggle split/join" },
     },
 }
