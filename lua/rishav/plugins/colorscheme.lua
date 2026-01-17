@@ -39,6 +39,10 @@ return {
                     FloatBorder = { fg = colors.blue, bg = "NONE" },
                     FloatTitle = { fg = colors.mauve, bg = "NONE", bold = true },
 
+                    -- Terminal (solid background for readability)
+                    TermCursor = { bg = colors.rosewater },
+                    TermCursorNC = { bg = colors.surface1 },
+
                     -- Telescope (transparent)
                     TelescopeNormal = { bg = "NONE" },
                     TelescopeBorder = { fg = colors.blue, bg = "NONE" },

@@ -41,8 +41,9 @@ local function create_floating_window(opts)
 
     local win = vim.api.nvim_open_win(buf, true, win_config)
 
-    -- Set window options
-    vim.wo[win].winblend = 5
+    -- Set window options for better terminal visibility
+    vim.wo[win].winblend = 0
+    vim.wo[win].winhighlight = "Normal:Normal,FloatBorder:FloatBorder"
 
     return { buf = buf, win = win }
 end
