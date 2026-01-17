@@ -20,7 +20,7 @@ return {
         -- Find
         { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
         { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent files" },
-        { "<leader>fs", "<cmd>Telescope live_grep<CR>", desc = "Live grep" },
+        { "<leader>fs", "<cmd>Telescope grep_string<CR>", desc = "Live grep" },
         { "<leader>fc", "<cmd>Telescope grep_string<CR>", desc = "Grep under cursor" },
         { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
         { "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help tags" },
