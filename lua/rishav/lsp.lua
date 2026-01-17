@@ -4,8 +4,8 @@
 --- LSP keybindings follow conventions:
 --- g prefix - Go to (definition, references, etc.)
 --- K - Hover documentation
---- <leader>l prefix - LSP actions (format, rename, etc.)
---- <leader>c prefix - Code actions
+--- <leader>c prefix - Code actions (rename, code actions, LSP management)
+--- <leader>l - Format file (via conform.nvim)
 local utils = require("rishav.core.utils")
 local icons = require("rishav.core.icons")
 
@@ -34,28 +34,23 @@ local function setup_keymaps(client, bufnr)
     map("n", "<leader>cs", "<cmd>Telescope lsp_document_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Document symbols" }))
     map("n", "<leader>cS", "<cmd>Telescope lsp_workspace_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Workspace symbols" }))
 
-    -- LSP management (leader + l)
-    map("n", "<leader>lr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-    map("n", "<leader>lf", function()
-        vim.lsp.buf.format({ async = true })
-    end, vim.tbl_extend("force", opts, { desc = "Format document" }))
-    map("v", "<leader>lf", function()
-        vim.lsp.buf.format({ async = true })
-    end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
-    map("n", "<leader>li", "<cmd>LspInfo<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
-    map("n", "<leader>lR", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+    -- LSP management (leader + c for code operations)
+    map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+    -- Note: Formatting is handled by conform.nvim with <leader>l
+    map("n", "<leader>ci", "<cmd>LspInfo<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
+    map("n", "<leader>cR", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
 
     -- Inlay hints toggle (if supported)
     if client:supports_method("textDocument/inlayHint", bufnr) then
-        map("n", "<leader>lh", function()
+        map("n", "<leader>ch", function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
         end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
     end
 
     -- Codelens (if supported)
     if client:supports_method("textDocument/codeLens", bufnr) then
-        map("n", "<leader>ll", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
-        map("n", "<leader>lL", vim.lsp.codelens.refresh, vim.tbl_extend("force", opts, { desc = "Refresh codelens" }))
+        map("n", "<leader>cl", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
+        map("n", "<leader>cL", vim.lsp.codelens.refresh, vim.tbl_extend("force", opts, { desc = "Refresh codelens" }))
     end
 end
 

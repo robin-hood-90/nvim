@@ -182,22 +182,6 @@ map("n", "<leader>dd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
 --------------------------------------------------------------------------------
--- Better Command Line (C-a avoided - conflicts with tmux prefix)
---------------------------------------------------------------------------------
-map("c", "<C-b>", "<Left>", { silent = false, desc = "Move left" })
-map("c", "<C-f>", "<Right>", { silent = false, desc = "Move right" })
-map("c", "<C-e>", "<End>", { silent = false, desc = "End of line" })
-map("c", "<C-j>", "<Down>", { silent = false, desc = "Next history" })
-map("c", "<C-k>", "<Up>", { silent = false, desc = "Previous history" })
-
--- Add undo break-points
-map("i", ",", ",<C-g>u")
-map("i", ".", ".<C-g>u")
--- map("i", ";", ";<C-g>u")
-map("i", "!", "!<C-g>u")
-map("i", "?", "?<C-g>u")
-
---------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
 map("n", "<leader>L", "<cmd>Lazy<CR>", { desc = "Lazy plugin manager" })

@@ -51,9 +51,9 @@ return {
         { "<leader>fC", "<cmd>Telescope command_history<CR>", desc = "Command history" },
         { "<leader>fn", "<cmd>Telescope notify<CR>", desc = "Notifications" },
 
-        -- LSP (under <leader>l for LSP consistency)
-        { "<leader>ls", "<cmd>Telescope lsp_document_symbols<CR>", desc = "Document symbols" },
-        { "<leader>lS", "<cmd>Telescope lsp_workspace_symbols<CR>", desc = "Workspace symbols" },
+        -- Code/LSP symbols (under <leader>c for code consistency)
+        { "<leader>cs", "<cmd>Telescope lsp_document_symbols<CR>", desc = "Document symbols" },
+        { "<leader>cS", "<cmd>Telescope lsp_workspace_symbols<CR>", desc = "Workspace symbols" },
 
         -- Special
         { "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "Todo comments" },

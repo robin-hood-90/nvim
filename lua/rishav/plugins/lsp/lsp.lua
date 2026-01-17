@@ -40,7 +40,9 @@ return {
         vim.lsp.config("jdtls", {
             autostart = false,
             -- Return empty root_dir to prevent starting
-            root_dir = function() return nil end,
+            root_dir = function()
+                return nil
+            end,
         })
     end,
 }

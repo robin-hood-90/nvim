@@ -4,7 +4,7 @@ return {
     cmd = { "ConformInfo" },
     keys = {
         {
-            "<leader>lf",
+            "<leader>l",
             function()
                 require("conform").format({ async = true, lsp_format = "fallback" })
             end,
@@ -12,7 +12,7 @@ return {
             desc = "Format file or range",
         },
         {
-            "<leader>lF",
+            "<leader>uf",
             function()
                 vim.g.disable_autoformat = not vim.g.disable_autoformat
                 vim.notify(
