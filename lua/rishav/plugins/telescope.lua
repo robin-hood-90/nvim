@@ -1,5 +1,15 @@
 ---@module "rishav.plugins.telescope"
 ---Fuzzy finder configuration
+---
+--- Primary keybindings under <leader>f (find):
+--- <leader>ff - Find files
+--- <leader>fg - Live grep (search text)
+--- <leader>fw - Grep word under cursor
+--- <leader>fb - Buffers
+--- <leader>fr - Recent files
+--- <leader>fh - Help tags
+--- <leader>fk - Keymaps
+--- <leader><leader> - Resume last picker
 return {
     "nvim-telescope/telescope.nvim",
     branch = "master",
@@ -17,25 +27,44 @@ return {
         "folke/todo-comments.nvim",
     },
     keys = {
-        -- Find
+        -- Primary find operations (most used)
         { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
-        { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent files" },
-        { "<leader>fs", "<cmd>Telescope grep_string<CR>", desc = "Live grep" },
-        { "<leader>fc", "<cmd>Telescope grep_string<CR>", desc = "Grep under cursor" },
+        { "<leader>fg", "<cmd>Telescope live_grep<CR>", desc = "Live grep" },
+        { "<leader>fw", "<cmd>Telescope grep_string<CR>", desc = "Grep word under cursor" },
         { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
+        { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent files" },
+        { "<leader>f/", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Search in buffer" },
+
+        -- Git
+        { "<leader>gf", "<cmd>Telescope git_files<CR>", desc = "Git files" },
+        { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "Git commits" },
+        { "<leader>gC", "<cmd>Telescope git_bcommits<CR>", desc = "Git buffer commits" },
+        { "<leader>gb", "<cmd>Telescope git_branches<CR>", desc = "Git branches" },
+        { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "Git status" },
+
+        -- Help / Info
         { "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help tags" },
         { "<leader>fk", "<cmd>Telescope keymaps<CR>", desc = "Keymaps" },
-        { "<leader>fd", "<cmd>Telescope diagnostics<CR>", desc = "Diagnostics" },
-        { "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "Todo comments" },
-        { "<leader>fn", "<cmd>Telescope notify<CR>", desc = "Notifications" },
         { "<leader>fm", "<cmd>Telescope marks<CR>", desc = "Marks" },
-        { "<leader>fg", "<cmd>Telescope git_files<CR>", desc = "Git files" },
-        { "<leader>f/", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Search in buffer" },
-        -- LSP
+        { "<leader>fR", "<cmd>Telescope registers<CR>", desc = "Registers" },
+        { "<leader>fc", "<cmd>Telescope commands<CR>", desc = "Commands" },
+        { "<leader>fC", "<cmd>Telescope command_history<CR>", desc = "Command history" },
+        { "<leader>fn", "<cmd>Telescope notify<CR>", desc = "Notifications" },
+
+        -- LSP (under <leader>l for LSP consistency)
         { "<leader>ls", "<cmd>Telescope lsp_document_symbols<CR>", desc = "Document symbols" },
         { "<leader>lS", "<cmd>Telescope lsp_workspace_symbols<CR>", desc = "Workspace symbols" },
-        -- Resume
-        { "<leader><leader>", "<cmd>Telescope resume<CR>", desc = "Resume last search" },
+
+        -- Special
+        { "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "Todo comments" },
+        { "<leader>fd", "<cmd>Telescope diagnostics<CR>", desc = "Diagnostics" },
+
+        -- Resume last picker (very useful!)
+        { "<leader><leader>", "<cmd>Telescope resume<CR>", desc = "Resume last picker" },
+
+        -- Quick access (alternative bindings for speed)
+        { "<C-p>", "<cmd>Telescope find_files<CR>", desc = "Find files" },
+        { "<leader>/", "<cmd>Telescope live_grep<CR>", desc = "Search in project" },
     },
     config = function()
         local telescope = require("telescope")

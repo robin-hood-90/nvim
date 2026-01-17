@@ -5,6 +5,26 @@ return {
         "nvim-neotest/nvim-nio",
         "theHamsta/nvim-dap-virtual-text",
     },
+    -- stylua: ignore
+    keys = {
+        { "<F5>", function() require("dap").continue() end, desc = "Debug: Continue" },
+        { "<F10>", function() require("dap").step_over() end, desc = "Debug: Step Over" },
+        { "<F11>", function() require("dap").step_into() end, desc = "Debug: Step Into" },
+        { "<F12>", function() require("dap").step_out() end, desc = "Debug: Step Out" },
+        { "<leader>Db", function() require("dap").toggle_breakpoint() end, desc = "Debug: Toggle breakpoint" },
+        { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end, desc = "Debug: Conditional breakpoint" },
+        { "<leader>Dl", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log: ")) end, desc = "Debug: Log point" },
+        { "<leader>Dr", function() require("dap").repl.toggle() end, desc = "Debug: Toggle REPL" },
+        { "<leader>Du", function() require("dapui").toggle() end, desc = "Debug: Toggle UI" },
+        { "<leader>Dc", function() require("dap").run_to_cursor() end, desc = "Debug: Run to cursor" },
+        { "<leader>DL", function() require("dap").run_last() end, desc = "Debug: Run last" },
+        { "<leader>Dx", function() require("dap").terminate() end, desc = "Debug: Terminate" },
+        { "<leader>Dh", function() require("dap.ui.widgets").hover() end, mode = { "n", "v" }, desc = "Debug: Hover" },
+        { "<leader>Dp", function() require("dap.ui.widgets").preview() end, mode = { "n", "v" }, desc = "Debug: Preview" },
+        { "<leader>Df", function() local w = require("dap.ui.widgets"); w.centered_float(w.frames) end, desc = "Debug: Frames" },
+        { "<leader>Ds", function() local w = require("dap.ui.widgets"); w.centered_float(w.scopes) end, desc = "Debug: Scopes" },
+        { "<leader>Dw", function() require("dapui").elements.watches.add(vim.fn.expand("<cword>")) end, desc = "Debug: Add watch" },
+    },
     config = function()
         local dap = require("dap")
         local dapui = require("dapui")
@@ -119,80 +139,5 @@ return {
         dap.listeners.before.event_exited.dapui_config = function()
             dapui.close()
         end
-
-        -- Keybindings
-        vim.keymap.set("n", "<leader>dc", function()
-            require("dap").continue()
-        end, { desc = "Continue Debugging" })
-        vim.keymap.set("n", "<leader>do", function()
-            require("dap").step_over()
-        end, { desc = "Step Over" })
-        vim.keymap.set("n", "<leader>di", function()
-            require("dap").step_into()
-        end, { desc = "Step Into" })
-        vim.keymap.set("n", "<leader>dt", function()
-            require("dapui").toggle()
-        end, { desc = "Toggle DAP UI" })
-        vim.keymap.set("n", "<Leader>b", function()
-            require("dap").toggle_breakpoint()
-        end, { desc = "Toggle Breakpoint" })
-        vim.keymap.set("n", "<Leader>B", function()
-            require("dap").set_breakpoint()
-        end, { desc = "Set Breakpoint" })
-        vim.keymap.set("n", "<Leader>lp", function()
-            require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-        end, { desc = "Set Log Point" })
-        vim.keymap.set("n", "<Leader>dr", function()
-            require("dap").repl.open()
-        end, { desc = "Open REPL" })
-        vim.keymap.set("n", "<Leader>dl", function()
-            require("dap").run_last()
-        end, { desc = "Run Last" })
-        vim.keymap.set({ "n", "v" }, "<Leader>dh", function()
-            require("dap.ui.widgets").hover()
-        end, { desc = "Hover Widget" })
-        vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
-            require("dap.ui.widgets").preview()
-        end, { desc = "Preview Widget" })
-        vim.keymap.set("n", "<Leader>df", function()
-            local widgets = require("dap.ui.widgets")
-            widgets.centered_float(widgets.frames)
-        end, { desc = "Show Frames" })
-        vim.keymap.set("n", "<leader>ds", function()
-            local widgets = require("dap.ui.widgets")
-            widgets.centered_float(widgets.scopes)
-        end, { desc = "Show Scopes" })
-
-        -- Add watch expression for word under cursor or visual selection
-        vim.keymap.set("n", "<Leader>dw", function()
-            local expr = vim.fn.expand("<cword>")
-            if expr ~= "" then
-                require("dapui").elements.watches.add(expr)
-            end
-        end, { desc = "Add Watch Expression" })
-
-        vim.keymap.set("v", "<Leader>dw", function()
-            local expr = vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = vim.fn.mode() })
-            expr = table.concat(expr, "\n")
-            if expr ~= "" then
-                require("dapui").elements.watches.add(expr)
-            end
-        end, { desc = "Add Watch Expression" })
-
-        -- Add watch from visual selection or word under cursor
-        vim.keymap.set({ "n", "v" }, "<Leader>dW", function()
-            local expr
-            if vim.fn.mode() == "v" or vim.fn.mode() == "V" then
-                -- Get visually selected text
-                vim.cmd('normal! "vy')
-                expr = vim.fn.getreg("v")
-            else
-                -- Get word under cursor
-                expr = vim.fn.expand("<cword>")
-            end
-            if expr ~= "" then
-                require("dapui").elements.watches.add(expr)
-            end
-        end, { desc = "Add Watch (word/selection)" })
     end,
 }

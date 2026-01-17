@@ -19,15 +19,38 @@ return {
             columns = {
                 "icon",
             },
+            keymaps = {
+                ["g?"] = "actions.show_help",
+                ["<CR>"] = "actions.select",
+                ["<C-v>"] = "actions.select_vsplit",
+                ["<C-s>"] = "actions.select_split",
+                ["<C-t>"] = "actions.select_tab",
+                ["<C-p>"] = "actions.preview",
+                ["q"] = "actions.close",
+                ["<Esc>"] = "actions.close",
+                ["-"] = "actions.parent",
+                ["_"] = "actions.open_cwd",
+                ["`"] = "actions.cd",
+                ["~"] = "actions.tcd",
+                ["gs"] = "actions.change_sort",
+                ["gx"] = "actions.open_external",
+                ["g."] = "actions.toggle_hidden",
+            },
         },
         keys = {
             {
-                "<leader>o",
+                "-",
+                function()
+                    require("oil").open()
+                end,
+                desc = "Open parent directory",
+            },
+            {
+                "<leader>eo",
                 function()
                     require("oil").toggle_float()
                 end,
-                mode = { "n", "v", "x" },
-                desc = "toggle oil file tree",
+                desc = "Oil: Toggle float",
             },
         },
     },

@@ -21,32 +21,28 @@ return {
         "nvim-lua/plenary.nvim",
         "MeanderingProgrammer/render-markdown.nvim",
     },
-
+    -- All Copilot keymaps under <leader>c prefix
     keys = {
-        { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot Chat Toggle" },
-        { "<leader>co", "<cmd>CopilotChatOpen<cr>", desc = "Copilot Chat Open" },
+        -- Toggle and basic
+        { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot: Toggle chat" },
+        { "<leader>cq", function()
+            local input = vim.fn.input("Ask Copilot: ")
+            if input ~= "" then
+                require("CopilotChat").ask(input)
+            end
+        end, desc = "Copilot: Quick ask" },
 
-        { "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = { "n", "v" }, desc = "Copilot Explain" },
-        { "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Copilot Fix" },
-        { "<leader>cp", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Copilot Optimize" },
-        { "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot Tests" },
-        { "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = { "n", "v" }, desc = "Copilot Docs" },
-        { "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = { "n", "v" }, desc = "Copilot Review" },
+        -- Code assistance (visual mode friendly)
+        { "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = { "n", "v" }, desc = "Copilot: Explain" },
+        { "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Copilot: Fix" },
+        { "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Copilot: Optimize" },
+        { "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot: Generate tests" },
+        { "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = { "n", "v" }, desc = "Copilot: Add docs" },
+        { "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = { "n", "v" }, desc = "Copilot: Review" },
 
-        {
-            "<leader>cq",
-            function()
-                local input = vim.fn.input("Ask Copilot: ")
-                if input ~= "" then
-                    require("CopilotChat").ask(input)
-                end
-            end,
-            desc = "Copilot Quick Chat",
-        },
-
-        { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "Copilot Select Model" },
-        { "<leader>cv", "<cmd>CopilotChatModel<cr>", desc = "Copilot View Model" },
-        { "<leader>cx", "<cmd>CopilotChatReset<cr>", desc = "Copilot Reset Chat" },
+        -- Management
+        { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "Copilot: Select model" },
+        { "<leader>cx", "<cmd>CopilotChatReset<cr>", desc = "Copilot: Reset chat" },
     },
 
     config = function()

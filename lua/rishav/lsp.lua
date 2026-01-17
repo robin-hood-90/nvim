@@ -1,5 +1,11 @@
 ---@module "rishav.lsp"
 ---LSP keymaps and configuration
+---
+--- LSP keybindings follow conventions:
+--- g prefix - Go to (definition, references, etc.)
+--- K - Hover documentation
+--- <leader>l prefix - LSP actions (format, rename, etc.)
+--- <leader>c prefix - Code actions
 local utils = require("rishav.core.utils")
 local icons = require("rishav.core.icons")
 
@@ -11,33 +17,45 @@ local map = utils.map
 local function setup_keymaps(client, bufnr)
     local opts = { buffer = bufnr }
 
-    -- Navigation
-    map("n", "gR", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "LSP references" }))
-    map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+    -- Navigation (g prefix for "go to")
     map("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", vim.tbl_extend("force", opts, { desc = "LSP implementations" }))
-    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", vim.tbl_extend("force", opts, { desc = "LSP type definitions" }))
-
-    -- Actions
-    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-    map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Smart rename" }))
-
-    -- Diagnostics
-    map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", vim.tbl_extend("force", opts, { desc = "Buffer diagnostics" }))
-    map("n", "<leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Line diagnostics" }))
+    map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+    map("n", "gr", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
+    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", vim.tbl_extend("force", opts, { desc = "Go to implementations" }))
+    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
 
     -- Documentation
     map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+    map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
     map("i", "<C-k>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
 
-    -- Utility
-    map("n", "<leader>rs", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+    -- Code actions (leader + c)
+    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
+    map("n", "<leader>cs", "<cmd>Telescope lsp_document_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Document symbols" }))
+    map("n", "<leader>cS", "<cmd>Telescope lsp_workspace_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Workspace symbols" }))
+
+    -- LSP management (leader + l)
+    map("n", "<leader>lr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+    map("n", "<leader>lf", function()
+        vim.lsp.buf.format({ async = true })
+    end, vim.tbl_extend("force", opts, { desc = "Format document" }))
+    map("v", "<leader>lf", function()
+        vim.lsp.buf.format({ async = true })
+    end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
+    map("n", "<leader>li", "<cmd>LspInfo<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
+    map("n", "<leader>lR", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
 
     -- Inlay hints toggle (if supported)
     if client:supports_method("textDocument/inlayHint", bufnr) then
-        map("n", "<leader>ih", function()
+        map("n", "<leader>lh", function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
         end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
+    end
+
+    -- Codelens (if supported)
+    if client:supports_method("textDocument/codeLens", bufnr) then
+        map("n", "<leader>ll", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
+        map("n", "<leader>lL", vim.lsp.codelens.refresh, vim.tbl_extend("force", opts, { desc = "Refresh codelens" }))
     end
 end
 

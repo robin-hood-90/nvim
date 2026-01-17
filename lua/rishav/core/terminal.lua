@@ -125,12 +125,13 @@ end, {
 --------------------------------------------------------------------------------
 -- Keymaps
 --------------------------------------------------------------------------------
--- Terminal escape
+-- Terminal escape (double Esc is more reliable)
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
--- Toggle terminals
-map({ "n", "t" }, "<leader>tt", toggle_floating_terminal, { desc = "Toggle floating terminal" })
-map({ "n", "t" }, "<C-t>", toggle_bottom_terminal, { desc = "Toggle bottom terminal" })
+-- Toggle terminals (F7 works reliably across all terminals/tmux)
+map({ "n", "t" }, "<F7>", toggle_floating_terminal, { desc = "Toggle floating terminal" })
+map({ "n", "t" }, "<leader>tf", toggle_floating_terminal, { desc = "Toggle floating terminal" })
+map({ "n", "t" }, "<leader>tb", toggle_bottom_terminal, { desc = "Toggle bottom terminal" })
 
 -- Terminal navigation (use Ctrl+hjkl to navigate out of terminal)
 map("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window" })

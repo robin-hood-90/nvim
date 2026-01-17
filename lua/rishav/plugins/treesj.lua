@@ -2,7 +2,6 @@ return {
     "Wansmer/treesj",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
-        -- Use default keymaps (<space>m - toggle, <space>j - join, <space>s - split)
         use_default_keymaps = false,
         -- Node with syntax error will not be formatted
         check_syntax_error = true,
@@ -19,9 +18,9 @@ return {
     },
     -- stylua: ignore
     keys = {
-        { "<leader>m", function() require("treesj").toggle() end, desc = "Toggle Split/Join" },
-        { "<leader>j", function() require("treesj").join() end, desc = "Join Lines" },
-        { "<leader>s", function() require("treesj").split() end, desc = "Split Lines" },
-        { "<leader>M", function() require("treesj").toggle({ split = { recursive = true } }) end, desc = "Toggle Split/Join (Recursive)" },
+        -- Using gJ/gS for split/join (g prefix for "go" / transform operations)
+        { "gJ", function() require("treesj").join() end, desc = "Join code block" },
+        { "gS", function() require("treesj").split() end, desc = "Split code block" },
+        { "<leader>cj", function() require("treesj").toggle() end, desc = "Toggle split/join" },
     },
 }

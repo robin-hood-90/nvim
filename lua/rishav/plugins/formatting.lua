@@ -4,12 +4,23 @@ return {
     cmd = { "ConformInfo" },
     keys = {
         {
-            "<leader>l",
+            "<leader>lf",
             function()
                 require("conform").format({ async = true, lsp_format = "fallback" })
             end,
             mode = { "n", "v" },
-            desc = "Format file or range (in visual mode)",
+            desc = "Format file or range",
+        },
+        {
+            "<leader>lF",
+            function()
+                vim.g.disable_autoformat = not vim.g.disable_autoformat
+                vim.notify(
+                    "Auto-format " .. (vim.g.disable_autoformat and "disabled" or "enabled"),
+                    vim.log.levels.INFO
+                )
+            end,
+            desc = "Toggle auto-format",
         },
     },
     opts = {
