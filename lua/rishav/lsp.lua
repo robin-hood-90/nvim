@@ -21,8 +21,18 @@ local function setup_keymaps(client, bufnr)
     map("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
     map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
     map("n", "gr", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
-    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", vim.tbl_extend("force", opts, { desc = "Go to implementations" }))
-    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
+    map(
+        "n",
+        "gi",
+        "<cmd>Telescope lsp_implementations<CR>",
+        vim.tbl_extend("force", opts, { desc = "Go to implementations" })
+    )
+    map(
+        "n",
+        "gt",
+        "<cmd>Telescope lsp_type_definitions<CR>",
+        vim.tbl_extend("force", opts, { desc = "Go to type definition" })
+    )
 
     -- Documentation
     map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
@@ -31,8 +41,18 @@ local function setup_keymaps(client, bufnr)
 
     -- Code actions (leader + c)
     map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-    map("n", "<leader>cs", "<cmd>Telescope lsp_document_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Document symbols" }))
-    map("n", "<leader>cS", "<cmd>Telescope lsp_workspace_symbols<CR>", vim.tbl_extend("force", opts, { desc = "Workspace symbols" }))
+    map(
+        "n",
+        "<leader>cs",
+        "<cmd>Telescope lsp_document_symbols<CR>",
+        vim.tbl_extend("force", opts, { desc = "Document symbols" })
+    )
+    map(
+        "n",
+        "<leader>cS",
+        "<cmd>Telescope lsp_workspace_symbols<CR>",
+        vim.tbl_extend("force", opts, { desc = "Workspace symbols" })
+    )
 
     -- LSP management (leader + c for code operations)
     map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
