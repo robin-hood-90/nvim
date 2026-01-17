@@ -47,11 +47,25 @@ return {
         config = function(_, opts)
             require("mason-lspconfig").setup(opts)
 
+            -- Servers that require external tools to be installed
+            local conditional_servers = {
+                rust_analyzer = "cargo", -- Requires Rust toolchain
+            }
+
             -- Enable all installed servers except jdtls (handled by nvim-jdtls)
+            -- and servers that require unavailable external tools
             vim.schedule(function()
                 local servers = require("mason-lspconfig").get_installed_servers()
                 for _, server in ipairs(servers) do
-                    if server ~= "jdtls" then
+                    if server == "jdtls" then
+                        -- Skip jdtls - handled by nvim-jdtls
+                    elseif conditional_servers[server] then
+                        -- Check if required tool is available
+                        local required_tool = conditional_servers[server]
+                        if vim.fn.executable(required_tool) == 1 then
+                            vim.lsp.enable(server)
+                        end
+                    else
                         vim.lsp.enable(server)
                     end
                 end

@@ -1,3 +1,17 @@
+-- Only enable rust-analyzer if cargo is available
+local cargo_available = vim.fn.executable("cargo") == 1
+
+if not cargo_available then
+    -- Return empty config to prevent rust-analyzer from starting
+    -- This avoids errors when Rust toolchain is not installed
+    return {
+        autostart = false,
+        root_dir = function()
+            return nil
+        end,
+    }
+end
+
 return {
     on_attach = function(client, bufnr)
         if client.server_capabilities.inlayHintProvider then
