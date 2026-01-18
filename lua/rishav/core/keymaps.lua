@@ -90,10 +90,6 @@ map("v", "-", "g<C-x>", { desc = "Decrement numbers" })
 -- Better paste (don't yank replaced text)
 map("x", "p", [["_dP]], { desc = "Paste without yanking" })
 
--- Delete without yanking (use 'x' prefix for cut operations)
-map({ "n", "v" }, "x", [["_x]], { desc = "Delete char without yank" })
-map({ "n", "v" }, "<leader>x", [["_d]], { desc = "Delete without yank" })
-
 -- Yank to system clipboard
 map({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to clipboard" })
 map("n", "<leader>Y", [["+Y]], { desc = "Yank line to clipboard" })
