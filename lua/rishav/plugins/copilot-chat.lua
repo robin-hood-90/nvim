@@ -1,81 +1,81 @@
 return {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "main",
-    cmd = {
-        "CopilotChat",
-        "CopilotChatOpen",
-        "CopilotChatClose",
-        "CopilotChatToggle",
-        "CopilotChatExplain",
-        "CopilotChatFix",
-        "CopilotChatOptimize",
-        "CopilotChatTests",
-        "CopilotChatDocs",
-        "CopilotChatReview",
-        "CopilotChatModels",
-        "CopilotChatModel",
-        "CopilotChatReset",
-    },
-    dependencies = {
-        "zbirenbaum/copilot.lua",
-        "nvim-lua/plenary.nvim",
-        "MeanderingProgrammer/render-markdown.nvim",
-    },
-    -- All Copilot keymaps under <leader>c prefix
-    keys = {
-        -- Toggle and basic
-        { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot: Toggle chat" },
-        { "<leader>cq", function()
-            local input = vim.fn.input("Ask Copilot: ")
-            if input ~= "" then
-                require("CopilotChat").ask(input)
-            end
-        end, desc = "Copilot: Quick ask" },
-
-        -- Code assistance (visual mode friendly)
-        { "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = { "n", "v" }, desc = "Copilot: Explain" },
-        { "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Copilot: Fix" },
-        { "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Copilot: Optimize" },
-        { "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot: Generate tests" },
-        { "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = { "n", "v" }, desc = "Copilot: Add docs" },
-        { "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = { "n", "v" }, desc = "Copilot: Review" },
-
-        -- Management
-        { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "Copilot: Select model" },
-        { "<leader>cx", "<cmd>CopilotChatReset<cr>", desc = "Copilot: Reset chat" },
-    },
-
-    config = function()
-        local chat = require("CopilotChat")
-
-        chat.setup({
-            debug = false,
-            temperature = 0.1,
-
-            window = {
-                layout = "vertical",
-                width = 0.3,
-                height = 0.6,
-                title = "Copilot Chat",
-            },
-            separator = "-----------------------------",
-            auto_fold = true,
-
-            show_help = true,
-            auto_follow_cursor = true,
-            auto_insert_mode = false,
-            clear_chat_on_new_prompt = false,
-
-            highlight_selection = true,
-            highlight_headers = false,
-        })
-
-        -- Render markdown nicely inside Copilot Chat buffers
-        local ok, render_markdown = pcall(require, "render-markdown")
-        if ok then
-            render_markdown.setup({
-                file_types = { "markdown", "copilot-chat" },
-            })
-        end
-    end,
+    -- "CopilotC-Nvim/CopilotChat.nvim",
+    -- branch = "main",
+    -- cmd = {
+    --     "CopilotChat",
+    --     "CopilotChatOpen",
+    --     "CopilotChatClose",
+    --     "CopilotChatToggle",
+    --     "CopilotChatExplain",
+    --     "CopilotChatFix",
+    --     "CopilotChatOptimize",
+    --     "CopilotChatTests",
+    --     "CopilotChatDocs",
+    --     "CopilotChatReview",
+    --     "CopilotChatModels",
+    --     "CopilotChatModel",
+    --     "CopilotChatReset",
+    -- },
+    -- dependencies = {
+    --     "zbirenbaum/copilot.lua",
+    --     "nvim-lua/plenary.nvim",
+    --     "MeanderingProgrammer/render-markdown.nvim",
+    -- },
+    -- -- All Copilot keymaps under <leader>c prefix
+    -- keys = {
+    --     -- Toggle and basic
+    --     { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot: Toggle chat" },
+    --     { "<leader>cq", function()
+    --         local input = vim.fn.input("Ask Copilot: ")
+    --         if input ~= "" then
+    --             require("CopilotChat").ask(input)
+    --         end
+    --     end, desc = "Copilot: Quick ask" },
+    --
+    --     -- Code assistance (visual mode friendly)
+    --     { "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = { "n", "v" }, desc = "Copilot: Explain" },
+    --     { "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Copilot: Fix" },
+    --     { "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Copilot: Optimize" },
+    --     { "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot: Generate tests" },
+    --     { "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = { "n", "v" }, desc = "Copilot: Add docs" },
+    --     { "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = { "n", "v" }, desc = "Copilot: Review" },
+    --
+    --     -- Management
+    --     { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "Copilot: Select model" },
+    --     { "<leader>cx", "<cmd>CopilotChatReset<cr>", desc = "Copilot: Reset chat" },
+    -- },
+    --
+    -- config = function()
+    --     local chat = require("CopilotChat")
+    --
+    --     chat.setup({
+    --         debug = false,
+    --         temperature = 0.1,
+    --
+    --         window = {
+    --             layout = "vertical",
+    --             width = 0.3,
+    --             height = 0.6,
+    --             title = "Copilot Chat",
+    --         },
+    --         separator = "-----------------------------",
+    --         auto_fold = true,
+    --
+    --         show_help = true,
+    --         auto_follow_cursor = true,
+    --         auto_insert_mode = false,
+    --         clear_chat_on_new_prompt = false,
+    --
+    --         highlight_selection = true,
+    --         highlight_headers = false,
+    --     })
+    --
+    --     -- Render markdown nicely inside Copilot Chat buffers
+    --     local ok, render_markdown = pcall(require, "render-markdown")
+    --     if ok then
+    --         render_markdown.setup({
+    --             file_types = { "markdown", "copilot-chat" },
+    --         })
+    --     end
+    -- end,
 }
