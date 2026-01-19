@@ -124,6 +124,23 @@ M.mason = {
     package_uninstalled = "✗",
 }
 
+-- Neotest icons
+M.neotest = {
+    passed = "",
+    failed = "",
+    running = "",
+    skipped = "",
+    unknown = "",
+    watching = "",
+    non_collapsible = "─",
+    collapsed = "",
+    expanded = "",
+    child_prefix = "├",
+    final_child_prefix = "╰",
+    child_indent = "│",
+    final_child_indent = " ",
+}
+
 -- Border styles
 M.borders = {
     rounded = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },

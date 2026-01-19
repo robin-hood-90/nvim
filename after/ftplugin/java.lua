@@ -1,6 +1,7 @@
 local home = os.getenv("HOME")
 local workspace_path = home .. "/.local/share/nvim/jdtls-workspace/"
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+local root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
+local project_name = vim.fn.fnamemodify(root_dir or vim.fn.getcwd(), ":p:h:t")
 local workspace_dir = workspace_path .. project_name
 
 -- Check if jdtls is available
@@ -9,11 +10,6 @@ if not status then
     return
 end
 
--- This ftplugin runs for every Java buffer. jdtls.start_or_attach() handles
--- starting a new client or attaching to an existing one automatically.
--- We don't need manual client tracking - nvim-jdtls does this internally.
-
--- Helper function to find JAR files
 local function get_jdtls_jar()
     local jar =
         vim.fn.glob(home .. "/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar", true)
@@ -33,9 +29,11 @@ local function get_debug_jar()
     return jar ~= "" and jar or nil
 end
 
-local function get_test_jar()
-    local jar = vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/java-test/extension/server/*.jar", true)
-    return jar ~= "" and jar or nil
+local function get_test_jars()
+    -- Get all java-test extension jars
+    local test_path = vim.fn.stdpath("data") .. "/mason/packages/java-test/extension/server"
+    local jars = vim.fn.glob(test_path .. "/*.jar", true, true)
+    return jars or {}
 end
 
 local jdtls_jar = get_jdtls_jar()
@@ -46,23 +44,26 @@ end
 
 local lombok_jar = home .. "/.local/share/nvim/mason/packages/jdtls/lombok.jar"
 
--- Build bundles list
+-- Build bundles list for JDTLS extensions
+-- Order matters: debug adapter should be first, then test extension jars
 local bundles = {}
-if vim.fn.filereadable(lombok_jar) == 1 then
-    table.insert(bundles, lombok_jar)
-end
 
+-- Add java-debug-adapter (required for debugging)
 local debug_jar = get_debug_jar()
 if debug_jar then
-    table.insert(bundles, debug_jar)
+    -- This must be the first bundle for DAP to work correctly
+    vim.list_extend(bundles, { debug_jar })
 end
 
-local test_jar = get_test_jar()
-if test_jar then
-    for jar in test_jar:gmatch("[^\n]+") do
-        table.insert(bundles, jar)
-    end
+-- Add java-test extension jars (required for neotest-java)
+-- java-test provides test discovery and execution capabilities
+local test_jars = get_test_jars()
+if #test_jars > 0 then
+    vim.list_extend(bundles, test_jars)
 end
+
+-- Note: lombok is a java agent, not a bundle - it's passed via -javaagent flag
+-- Do NOT add lombok_jar to bundles as it will cause issues
 
 -- Argument input coroutine for DAP
 local function arginp()
@@ -112,7 +113,7 @@ local config = {
         "-data",
         workspace_dir,
     },
-    root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
+    root_dir = root_dir,
 
     settings = {
         java = {
