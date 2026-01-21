@@ -55,7 +55,7 @@ local function setup_keymaps(client, bufnr)
     )
 
     -- LSP management (leader + c for code operations)
-    map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+    map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
     -- Note: Formatting is handled by conform.nvim with <leader>l
     map("n", "<leader>ci", "<cmd>LspInfo<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
     map("n", "<leader>cR", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))

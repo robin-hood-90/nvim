@@ -15,7 +15,7 @@ return {
                 end,
                 render = "wrapped-compact",
                 stages = "fade",
-                top_down = false,
+                top_down = true,
             },
         },
     },
