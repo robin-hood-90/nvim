@@ -156,7 +156,7 @@ map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Previous location" })
 map("n", "]l", "<cmd>lnext<CR>zz", { desc = "Next location" })
 
 --------------------------------------------------------------------------------
--- Diagnostics (bracket navigation)
+-- Diagnostics (bracket navigation + <leader>x for Trouble integration)
 --------------------------------------------------------------------------------
 map("n", "[d", function()
     vim.diagnostic.jump({ count = -1, float = true })
@@ -176,8 +176,7 @@ end, { desc = "Previous warning" })
 map("n", "]w", function()
     vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN, float = true })
 end, { desc = "Next warning" })
-map("n", "<leader>dd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
-map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
+map("n", "<leader>xf", vim.diagnostic.open_float, { desc = "Line diagnostics (float)" })
 
 --------------------------------------------------------------------------------
 -- Utilities

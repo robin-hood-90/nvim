@@ -183,7 +183,8 @@ Leader key is `<Space>`. Use consistent prefixes:
 | `<leader>t` | Tabs/Terminal    | `<leader>tt` toggle terminal  |
 | `<leader>h` | Harpoon          | `<leader>ha` add file         |
 | `<leader>u` | UI toggles       | `<leader>uw` toggle wrap      |
-| `<leader>d` | Diagnostics      | `<leader>dd` line diagnostics |
+| `<leader>d` | Debug (DAP)      | `<leader>dc` continue         |
+| `<leader>x` | Diagnostics      | `<leader>xw` workspace diags  |
 | `[` / `]`   | Prev/Next        | `[d` prev diagnostic          |
 | `g`         | Go to (LSP)      | `gd` go to definition         |
 

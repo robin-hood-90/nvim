@@ -7,23 +7,39 @@ return {
     },
     -- stylua: ignore
     keys = {
+        -- Session control
+        { "<leader>dc", function() require("dap").continue() end, desc = "Continue/Start" },
+        { "<leader>dq", function() require("dap").terminate() end, desc = "Quit/Terminate" },
+        { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
+        { "<leader>dp", function() require("dap").pause() end, desc = "Pause" },
+
+        -- Stepping
+        { "<leader>ds", function() require("dap").step_over() end, desc = "Step Over" },
+        { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
+        { "<leader>do", function() require("dap").step_out() end, desc = "Step Out" },
+        { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
+
+        -- Breakpoints
+        { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+        { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end, desc = "Conditional Breakpoint" },
+        { "<leader>dL", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log: ")) end, desc = "Log Point" },
+        { "<leader>dx", function() require("dap").clear_breakpoints() end, desc = "Clear Breakpoints" },
+
+        -- UI & Inspection
+        { "<leader>du", function() require("dapui").toggle() end, desc = "Toggle UI" },
+        { "<leader>de", function() require("dapui").eval() end, mode = { "n", "v" }, desc = "Evaluate" },
+        { "<leader>dh", function() require("dap.ui.widgets").hover() end, mode = { "n", "v" }, desc = "Hover" },
+        { "<leader>df", function() local w = require("dap.ui.widgets"); w.centered_float(w.frames) end, desc = "Frames" },
+        { "<leader>dS", function() local w = require("dap.ui.widgets"); w.centered_float(w.scopes) end, desc = "Scopes" },
+        { "<leader>dw", function() require("dapui").elements.watches.add(vim.fn.expand("<cword>")) end, desc = "Add Watch" },
+        { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
+
+        -- Function keys (IDE-style, optional fallback)
         { "<F5>", function() require("dap").continue() end, desc = "Debug: Continue" },
+        { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Debug: Toggle Breakpoint" },
         { "<F10>", function() require("dap").step_over() end, desc = "Debug: Step Over" },
         { "<F11>", function() require("dap").step_into() end, desc = "Debug: Step Into" },
         { "<F12>", function() require("dap").step_out() end, desc = "Debug: Step Out" },
-        { "<leader>Db", function() require("dap").toggle_breakpoint() end, desc = "Debug: Toggle breakpoint" },
-        { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end, desc = "Debug: Conditional breakpoint" },
-        { "<leader>Dl", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log: ")) end, desc = "Debug: Log point" },
-        { "<leader>Dr", function() require("dap").repl.toggle() end, desc = "Debug: Toggle REPL" },
-        { "<leader>Du", function() require("dapui").toggle() end, desc = "Debug: Toggle UI" },
-        { "<leader>Dc", function() require("dap").run_to_cursor() end, desc = "Debug: Run to cursor" },
-        { "<leader>DL", function() require("dap").run_last() end, desc = "Debug: Run last" },
-        { "<leader>Dx", function() require("dap").terminate() end, desc = "Debug: Terminate" },
-        { "<leader>Dh", function() require("dap.ui.widgets").hover() end, mode = { "n", "v" }, desc = "Debug: Hover" },
-        { "<leader>Dp", function() require("dap.ui.widgets").preview() end, mode = { "n", "v" }, desc = "Debug: Preview" },
-        { "<leader>Df", function() local w = require("dap.ui.widgets"); w.centered_float(w.frames) end, desc = "Debug: Frames" },
-        { "<leader>Ds", function() local w = require("dap.ui.widgets"); w.centered_float(w.scopes) end, desc = "Debug: Scopes" },
-        { "<leader>Dw", function() require("dapui").elements.watches.add(vim.fn.expand("<cword>")) end, desc = "Debug: Add watch" },
     },
     config = function()
         local dap = require("dap")
@@ -43,15 +59,24 @@ return {
         vim.fn.sign_define("DapLogPoint", { text = "📝", texthl = "DiagnosticHint", linehl = "", numhl = "" })
 
         -- DAP UI setup
-        require("dapui").setup({
+        ---@diagnostic disable-next-line: missing-fields
+        dapui.setup({
             layouts = {
                 {
-                    elements = { "scopes", "breakpoints", "stacks", "watches" },
+                    elements = {
+                        { id = "scopes", size = 0.25 },
+                        { id = "breakpoints", size = 0.25 },
+                        { id = "stacks", size = 0.25 },
+                        { id = "watches", size = 0.25 },
+                    },
                     size = 40,
                     position = "left",
                 },
                 {
-                    elements = { "repl", "console" },
+                    elements = {
+                        { id = "repl", size = 0.5 },
+                        { id = "console", size = 0.5 },
+                    },
                     size = 0.25,
                     position = "bottom",
                 },
