@@ -39,6 +39,10 @@ return {
                 "pyright",
                 "gopls",
                 "clangd",
+                -- LaTeX
+                "texlab",
+                -- Typst
+                "tinymist",
                 -- NOTE: jdtls removed - handled by nvim-jdtls in ftplugin/java.lua
                 -- jdtls package installation is managed by mason-tool-installer
             },
@@ -72,6 +76,7 @@ return {
                 "isort",
                 "black",
                 "xmlformatter",
+                "latexindent",
                 -- Linters
                 "pylint",
                 "eslint_d",

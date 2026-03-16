@@ -44,9 +44,20 @@ return {
             rust = { "rustfmt" },
             c = { "clang-format" },
             cpp = { "clang-format" },
+            -- LaTeX (via latexindent)
+            tex = { "latexindent" },
+            bib = { "latexindent" },
+            -- Typst: uses tinymist's built-in formatter via LSP fallback
         },
         default_format_opts = {
             lsp_format = "fallback",
+        },
+        formatters = {
+            latexindent = {
+                command = "latexindent",
+                args = { "-" },
+                stdin = true,
+            },
         },
         format_on_save = function(bufnr)
             -- Disable with a global or buffer-local variable

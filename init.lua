@@ -18,7 +18,8 @@ vim.g.loaded_node_provider = 0
 
 -- Set leader keys early (before lazy.nvim loads)
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+-- Use backslash for localleader (VimTeX uses <localleader>l* mappings)
+vim.g.maplocalleader = "\\"
 
 -- Load core configuration first
 require("rishav.core")

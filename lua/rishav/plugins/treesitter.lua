@@ -51,11 +51,21 @@ return {
                     "vimdoc",
                     "query",
                     "regex",
+                    -- LaTeX: VimTeX handles highlighting; skip treesitter parsers
+                -- (latex parser requires tree-sitter CLI which may not be installed)
+                -- "latex",
+                -- "bibtex",
+                    -- Typst
+                    "typst",
                 },
                 sync_install = false,
                 auto_install = true,
                 highlight = {
                     enable = true,
+                    -- Disable treesitter highlighting for LaTeX; VimTeX's mature
+                    -- Vimscript syntax engine handles it better. Treesitter still
+                    -- provides folds and textobjects for LaTeX.
+                    disable = { "latex" },
                     additional_vim_regex_highlighting = false,
                 },
                 indent = {
