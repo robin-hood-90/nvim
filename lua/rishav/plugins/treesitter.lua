@@ -59,7 +59,7 @@ return {
                     "typst",
                 },
                 sync_install = false,
-                auto_install = true,
+                auto_install = false,
                 highlight = {
                     enable = true,
                     -- Disable treesitter highlighting for LaTeX; VimTeX's mature

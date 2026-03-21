@@ -1,41 +1,56 @@
 ---@module "rishav.plugins.latex"
 ---VimTeX: LaTeX editing, compilation, and live preview
 ---
---- IMPORTANT: VimTeX must NOT be lazy-loaded. It is already filetype-lazy by
---- design. Forcing lazy loading breaks inverse-search (`:VimtexInverseSearch`
---- must be globally available before any TeX file is opened).
+--- NOTE: This plugin is lazy-loaded on TeX filetypes to avoid startup warnings
+--- when LaTeX is not installed. VimTeX globals are set in init() which runs
+--- before the plugin loads.
+---
+--- NOTE: LaTeX must be installed separately. On Arch Linux:
+---   sudo pacman -S texlive-most texlive-binextra
+--- Or for a minimal install:
+---   sudo pacman -S texlive-basic texlive-latexextra texlive-fontsextra
 return {
     "lervag/vimtex",
-    lazy = false,
+    ft = { "tex", "latex", "bib", "plaintex" },
     init = function()
         -- Note: maplocalleader is set in init.lua before lazy loads
         -- (backslash '\' is used to avoid conflicts)
 
+        -- Check if latexmk is available
+        local has_latexmk = vim.fn.executable("latexmk") == 1
+
         -- ── Compiler ──────────────────────────────────────────────────────
-        vim.g.vimtex_compiler_method = "latexmk"
+        if has_latexmk then
+            vim.g.vimtex_compiler_method = "latexmk"
 
-        vim.g.vimtex_compiler_latexmk = {
-            aux_dir = ".aux",
-            out_dir = "",
-            callback = 1,
-            continuous = 1, -- latexmk -pvc: recompile on every save
-            executable = "latexmk",
-            hooks = {},
-            options = {
-                "-pdf",
-                "-pdflatex",
-                "-verbose",
-                "-file-line-error",
-                "-synctex=1", -- required for forward/inverse search
-                "-interaction=nonstopmode",
-            },
-        }
+            vim.g.vimtex_compiler_latexmk = {
+                aux_dir = ".aux",
+                out_dir = "",
+                callback = 1,
+                continuous = 1, -- latexmk -pvc: recompile on every save
+                executable = "latexmk",
+                hooks = {},
+                options = {
+                    "-pdf",
+                    "-pdflatex",
+                    "-verbose",
+                    "-file-line-error",
+                    "-synctex=1", -- required for forward/inverse search
+                    "-interaction=nonstopmode",
+                },
+            }
+        else
+            -- Disable compiler if latexmk not found (warning shown only when opening TeX files)
+            vim.g.vimtex_compiler_method = ""
+            vim.g.vimtex_compiler_enabled = 0
+        end
 
-        -- ── Viewer (Zathura + SyncTeX) ────────────────────────────────────
-        vim.g.vimtex_view_method = "zathura"
-
-        -- Forward-search callback: jump Nvim → Zathura after compilation
-        vim.g.vimtex_view_zathura_hook_callback = 0
+        -- ── Viewer (Okular) ────────────────────────────────────────────────
+        -- Use Okular with SyncTeX support for forward/inverse search
+        -- Keybindings: \lv to view PDF, \ll to compile
+        vim.g.vimtex_view_method = "general"
+        vim.g.vimtex_view_general_viewer = "okular"
+        vim.g.vimtex_view_general_options = "--unique @pdf"
 
         -- ── Quickfix / Diagnostics ────────────────────────────────────────
         -- 0 = don't auto-open quickfix; show only on explicit :VimtexErrors
@@ -71,5 +86,14 @@ return {
 
         -- Close VimTeX viewers when Nvim closes
         vim.g.vimtex_view_automatic = 1
+    end,
+    config = function()
+        -- Show warning only when actually opening a TeX file without LaTeX installed
+        if vim.fn.executable("latexmk") ~= 1 then
+            vim.notify(
+                "LaTeX not found. Compilation disabled.\nInstall with: sudo pacman -S texlive-most texlive-binextra",
+                vim.log.levels.WARN
+            )
+        end
     end,
 }

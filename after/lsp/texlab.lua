@@ -9,6 +9,15 @@
 --- Forward search is handled by VimTeX (<localleader>lv). texlab's
 --- build.onSave is disabled because VimTeX runs latexmk -pvc in
 --- continuous mode instead.
+---
+--- NOTE: texlab requires LaTeX to be installed. If not available,
+--- this LSP will not start.
+
+-- Check if texlab is available
+if vim.fn.executable("texlab") ~= 1 then
+    return nil
+end
+
 return {
     cmd = { "texlab" },
     filetypes = { "tex", "plaintex", "bib" },
