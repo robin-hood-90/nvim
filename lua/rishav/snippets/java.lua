@@ -48,6 +48,23 @@ private {} {}({}) {{
             )
         ),
 
+        -- Private static function with return type and parameters
+        s(
+            { trig = "prf", desc = "Private function" },
+            fmt(
+                [[
+private static {} {}({}) {{
+    {}
+}}
+]],
+                {
+                    i(1, "void"),
+                    i(2, "methodName"),
+                    i(3, ""),
+                    i(4, "// TODO: implement"),
+                }
+            )
+        ),
         -- Protected function
         s(
             { trig = "prof", desc = "Protected function" },

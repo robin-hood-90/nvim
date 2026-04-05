@@ -141,21 +141,7 @@ return {
             end
         end, { expr = true, desc = "Previous completion item" })
 
-        vim.keymap.set("c", "<Tab>", function()
-            if vim.fn.pumvisible() == 1 then
-                return "<C-n>"
-            else
-                return "<C-z>" -- Trigger wildmenu completion
-            end
-        end, { expr = true, desc = "Next completion / trigger wildmenu" })
-
-        vim.keymap.set("c", "<S-Tab>", function()
-            if vim.fn.pumvisible() == 1 then
-                return "<C-p>"
-            else
-                return "<S-Tab>"
-            end
-        end, { expr = true, desc = "Previous completion item" })
+        -- NOTE: Cmdline Tab/S-Tab handled by nvim-cmp's cmdline setup
 
         -- LSP hover doc scrolling
         vim.keymap.set({ "n", "i", "s" }, "<C-f>", function()

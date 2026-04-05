@@ -31,6 +31,29 @@ return {
             local lspkind = require("lspkind")
             local icons = require("rishav.core.icons")
 
+            -- LuaSnip session management: clean up snippet sessions properly
+            -- This prevents "ghost" jump points when leaving a snippet early
+            luasnip.config.setup({
+                history = true,
+                updateevents = "TextChanged,TextChangedI",
+                region_check_events = "CursorMoved",
+                delete_check_events = "TextChanged",
+            })
+
+            --- Try to tabout forward, returns true if successful
+            ---@return boolean
+            local function try_tabout()
+                local ok = pcall(vim.cmd.Tabout)
+                return ok
+            end
+
+            --- Try to tabout backward, returns true if successful
+            ---@return boolean
+            local function try_tabout_back()
+                local ok = pcall(vim.cmd.TaboutBack)
+                return ok
+            end
+
             cmp.setup({
                 snippet = {
                     expand = function(args)
@@ -68,29 +91,34 @@ return {
                     -- Confirm selection
                     ["<CR>"] = cmp.mapping(function(fallback)
                         if cmp.visible() and cmp.get_selected_entry() then
-                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                            if luasnip.expandable() then
+                                luasnip.expand()
+                            else
+                                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                            end
                         else
                             fallback()
                         end
                     end, { "i", "s" }),
 
-                    -- Tab for navigation and snippet jumping
+                    -- Tab: cmp visible → luasnip jump → tabout → literal tab
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         elseif luasnip.locally_jumpable(1) then
                             luasnip.jump(1)
-                        else
+                        elseif not try_tabout() then
                             fallback()
                         end
                     end, { "i", "s" }),
 
+                    -- S-Tab: cmp visible → luasnip jump back → tabout back → literal S-Tab
                     ["<S-Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
                         elseif luasnip.locally_jumpable(-1) then
                             luasnip.jump(-1)
-                        else
+                        elseif not try_tabout_back() then
                             fallback()
                         end
                     end, { "i", "s" }),
