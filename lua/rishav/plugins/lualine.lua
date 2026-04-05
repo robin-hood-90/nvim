@@ -29,7 +29,7 @@ return {
 
         return {
             options = {
-                theme = "catppuccin",
+                theme = vim.g.colors_name or "auto",
                 globalstatus = true,
                 component_separators = { left = "", right = "" },
                 section_separators = { left = "", right = "" },

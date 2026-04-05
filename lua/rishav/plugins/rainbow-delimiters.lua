@@ -97,30 +97,5 @@ return {
                 "markdown_inline",
             },
         })
-
-        -- Set up highlight groups with BRIGHT vibrant colors
-        -- These high-saturation colors will really pop on screen
-        local function setup_highlights()
-            -- Bright vibrant colors for maximum visibility
-            vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#ff4444", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#ffdd00", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#00aaff", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#ff8800", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#00ff66", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#dd55ff", bold = true })
-            vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#00ffff", bold = true })
-        end
-
-        -- Set up highlights immediately
-        setup_highlights()
-
-        -- Re-apply highlights when colorscheme changes
-        -- This ensures colors persist through theme switching
-        local group = vim.api.nvim_create_augroup("RainbowDelimitersHighlights", { clear = true })
-        vim.api.nvim_create_autocmd("ColorScheme", {
-            group = group,
-            callback = setup_highlights,
-            desc = "Set up rainbow delimiter highlights after colorscheme change",
-        })
     end,
 }
