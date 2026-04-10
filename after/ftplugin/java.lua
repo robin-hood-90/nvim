@@ -127,7 +127,7 @@ local config = {
                 downloadJavadoc = true,
             },
             referencesCodeLens = {
-                enabled = true,
+                enabled = false,
             },
             references = {
                 includeDecompiledSources = true,
@@ -254,10 +254,10 @@ local config = {
             end
         end, vim.tbl_extend("force", opts, { desc = "Extract Method" }))
 
-        -- Initial codelens refresh with error handling
+        -- Initial codelens enable/refresh with error handling
         vim.schedule(function()
             if vim.api.nvim_buf_is_valid(bufnr) then
-                pcall(vim.lsp.codelens.refresh, { bufnr = bufnr })
+                pcall(vim.lsp.codelens.enable, true, { bufnr = bufnr })
             end
         end)
     end,
@@ -282,13 +282,14 @@ jdtls.start_or_attach(config, {
     },
 })
 
--- Safe codelens refresh on save (use buffer only, not pattern)
+-- Safe codelens enable/refresh on save (use buffer only, not pattern)
 vim.api.nvim_create_autocmd("BufWritePost", {
     buffer = vim.api.nvim_get_current_buf(),
-    callback = function(ev)
+    callback = function()
         vim.schedule(function()
-            if vim.api.nvim_buf_is_valid(ev.buf) then
-                pcall(vim.lsp.codelens.refresh, { bufnr = ev.buf })
+            local bufnr = vim.api.nvim_get_current_buf()
+            if vim.api.nvim_buf_is_valid(bufnr) then
+                pcall(vim.lsp.codelens.enable, true, { bufnr = bufnr })
             end
         end)
     end,

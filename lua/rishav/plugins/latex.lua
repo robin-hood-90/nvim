@@ -67,8 +67,7 @@ return {
 
         -- ── Syntax / Concealment ──────────────────────────────────────────
         -- VimTeX ships a mature Vimscript syntax engine; let it handle TeX
-        -- highlighting (treesitter 'latex' parser is disabled for highlight
-        -- in treesitter.lua but still used for folds/textobjects).
+        -- highlighting (treesitter 'latex' parser is disabled for highlight).
         vim.g.vimtex_syntax_enabled = 1
         vim.g.vimtex_syntax_conceal_disable = 0 -- enable concealment
 

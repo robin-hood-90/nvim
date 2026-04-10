@@ -70,7 +70,9 @@ local function setup_keymaps(client, bufnr)
     -- Codelens (if supported)
     if client:supports_method("textDocument/codeLens", bufnr) then
         map("n", "<leader>cl", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
-        map("n", "<leader>cL", vim.lsp.codelens.refresh, vim.tbl_extend("force", opts, { desc = "Refresh codelens" }))
+        map("n", "<leader>cL", function()
+            vim.lsp.codelens.enable(true, { bufnr = bufnr })
+        end, vim.tbl_extend("force", opts, { desc = "Enable codelens" }))
     end
 end
 
