@@ -18,8 +18,6 @@ return {
                 },
                 config = function()
                     require("luasnip.loaders.from_vscode").lazy_load()
-                    -- Load custom snippets
-                    require("rishav.snippets.java").setup()
                 end,
             },
             "saadparwaiz1/cmp_luasnip",
@@ -43,15 +41,21 @@ return {
             --- Try to tabout forward, returns true if successful
             ---@return boolean
             local function try_tabout()
-                local ok = pcall(vim.cmd.Tabout)
-                return ok
+                -- Use feedkeys with <Plug>(Tabout) instead of deprecated :Tabout command
+                local keys = vim.api.nvim_replace_termcodes("<Plug>(Tabout)", true, false, true)
+                local ok, result = pcall(vim.fn.feedkeys, keys, "i")
+                -- feedkeys returns 0 on success, non-zero on failure
+                return ok and result == 0
             end
 
             --- Try to tabout backward, returns true if successful
             ---@return boolean
             local function try_tabout_back()
-                local ok = pcall(vim.cmd.TaboutBack)
-                return ok
+                -- Use feedkeys with <Plug>(TaboutBack) instead of deprecated :TaboutBack command
+                local keys = vim.api.nvim_replace_termcodes("<Plug>(TaboutBack)", true, false, true)
+                local ok, result = pcall(vim.fn.feedkeys, keys, "i")
+                -- feedkeys returns 0 on success, non-zero on failure
+                return ok and result == 0
             end
 
             cmp.setup({
