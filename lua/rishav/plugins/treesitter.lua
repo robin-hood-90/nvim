@@ -1,24 +1,11 @@
 ---@module "rishav.plugins.treesitter"
----Treesitter syntax highlighting and related features
+---Treesitter syntax highlighting and related features for Neovim 0.12+
 return {
-    -- Treesitter installer + queries.
-    --
-    -- NOTE: Neovim 0.12+ requires nvim-treesitter's `main` branch.
-    -- The old `master` branch is archived and breaks with 0.12 (node:range API).
     {
         "nvim-treesitter/nvim-treesitter",
         branch = "main",
         lazy = false,
-        build = function()
-            if vim.fn.executable("tree-sitter") == 1 then
-                vim.cmd("TSUpdate")
-            else
-                vim.notify(
-                    "Skipping :TSUpdate (tree-sitter-cli not installed)",
-                    vim.log.levels.WARN
-                )
-            end
-        end,
+        build = ":TSUpdate",
         dependencies = {
             "windwp/nvim-ts-autotag",
             {
@@ -34,42 +21,97 @@ return {
             },
         },
         config = function()
+            -- ── 1. Core setup ────────────────────────────────────────────────────
+            -- On the `main` branch, nvim-treesitter only manages parsers/queries.
+            -- Highlighting, folding, and indentation are wired up separately below.
+            -- setup() accepts install_dir and other meta options — NOT highlight/indent.
             local ok, ts = pcall(require, "nvim-treesitter")
-            if ok then
-                -- New (0.12+) API: this plugin only manages parsers/queries.
-                -- Highlighting/folds are provided by Neovim and must be enabled per filetype.
-                ts.setup({})
+            if not ok then
+                vim.notify("[treesitter] Failed to load nvim-treesitter: " .. tostring(ts), vim.log.levels.ERROR)
+                return
             end
 
-            -- Neovim 0.12 ships builtin parsers + queries for a set of languages.
-            -- If you previously used nvim-treesitter's archived branch, it likely left behind
-            -- parser .so files under the plugin directory (e.g. .../lazy/nvim-treesitter/parser).
-            -- Those can be older than Neovim's runtime queries, causing query field mismatches.
-            -- Prefer the builtin parser when available.
-            local function prefer_builtin_parser(lang)
-                if vim._ts_has_language and vim._ts_has_language(lang) then
-                    return
-                end
+            ts.setup({
+                -- Optional: change where parsers are stored
+                -- install_dir = vim.fn.stdpath("data") .. "/treesitter",
+            })
 
-                local files = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", true)
-                if #files == 0 then
+            -- ── 2. Ensure parsers are installed (replaces `ensure_installed`) ────
+            -- The new main branch dropped `ensure_installed` from setup().
+            -- Instead, diff against already-installed parsers and install missing ones.
+            local parsers_to_ensure = {
+                "bash",
+                "c",
+                "cpp",
+                "css",
+                "dockerfile",
+                "gitignore",
+                "go",
+                "graphql",
+                "html",
+                "java",
+                "javascript",
+                "jsdoc",
+                "json",
+                "lua",
+                "markdown",
+                "markdown_inline",
+                "prisma",
+                "python",
+                "query",
+                "regex",
+                "rust",
+                "svelte",
+                "tsx",
+                "typescript",
+                "typst",
+                "vim",
+                "vimdoc",
+                "yaml",
+            }
+
+            -- nvim-treesitter.config.get_installed() returns the list of already
+            -- compiled parsers, so we only install what's actually missing.
+            local ts_config_ok, ts_config = pcall(require, "nvim-treesitter.config")
+            if ts_config_ok then
+                local already_installed = ts_config.get_installed() or {}
+                local missing = vim.iter(parsers_to_ensure)
+                    :filter(function(p)
+                        return not vim.tbl_contains(already_installed, p)
+                    end)
+                    :totable()
+                if #missing > 0 then
+                    ts.install(missing)
+                end
+            end
+
+            -- ── 3. Prefer Neovim's bundled parsers over stale lazy/ ones ─────────
+            -- Neovim 0.12 ships built-in parsers for lua, vim, vimdoc, etc.
+            -- If the old master branch left behind parser .so files under
+            -- lazy/nvim-treesitter/parser/, they may be stale and break queries.
+            -- This function forces the built-in (or any non-lazy) parser to win.
+            local function prefer_builtin_parser(lang)
+                -- If Neovim already has the language registered, nothing to do.
+                if vim.treesitter.language.inspect and pcall(vim.treesitter.language.inspect, lang) then
                     return
                 end
 
                 local data = vim.fn.stdpath("data")
                 local lazy_parser_prefix = data .. "/lazy/nvim-treesitter/parser/"
+                local files = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", true)
+                if #files == 0 then
+                    return
+                end
 
                 local chosen
-
-                -- First: prefer Neovim's bundled parser path.
+                -- Priority 1: Neovim's own bundled parser path.
                 for _, f in ipairs(files) do
                     if f:find("/lib/nvim/parser/", 1, true) then
                         chosen = f
                         break
                     end
                 end
-
-                -- Second: any parser that isn't the stale lazy/nvim-treesitter one.
+                -- Priority 2: anything that isn't the stale lazy/ parser.
                 if not chosen then
                     for _, f in ipairs(files) do
                         if not f:find(lazy_parser_prefix, 1, true) then
@@ -84,83 +126,74 @@ return {
                 end
             end
 
-            -- Lua ftplugin in 0.12 calls vim.treesitter.start() unconditionally.
-            -- Ensure it loads a compatible parser.
+            -- These three are the ones most likely to have stale parsers from master.
             prefer_builtin_parser("lua")
-
-            -- Neovim ships `vim`/`vimdoc` queries and parsers too. If an older parser is found
-            -- earlier on runtimepath, Neovim's queries can fail to compile (e.g. "tab").
             prefer_builtin_parser("vim")
             prefer_builtin_parser("vimdoc")
 
-            -- Setup autotag (independent of nvim-treesitter API changes)
+            -- ── 4. Language aliases ───────────────────────────────────────────────
+            -- Register bash parser for zsh files (no separate zsh parser exists).
+            pcall(vim.treesitter.language.register, "bash", "zsh")
+            -- sh files also use the bash parser.
+            pcall(vim.treesitter.language.register, "bash", "sh")
+
+            -- ── 5. Autotag setup ──────────────────────────────────────────────────
             pcall(function()
                 require("nvim-ts-autotag").setup()
             end)
 
-            -- Use bash parser for zsh files
-            pcall(function()
-                vim.treesitter.language.register("bash", "zsh")
-            end)
-
-            -- Enable treesitter features for selected filetypes.
-            -- This replaces the old `highlight = { enable = true }` behavior from the archived branch.
+            -- ── 6. Enable TS features per filetype via autocmd ───────────────────
+            -- On the new main branch, highlighting, folding, and indentation are
+            -- NOT enabled by setup(). You must wire them up yourself.
+            -- `vim.wo[0][0]` is the window-local scoping syntax for 0.12+ to avoid
+            -- leaking options across windows sharing the same buffer.
             local group = vim.api.nvim_create_augroup("rishav_treesitter", { clear = true })
+
+            -- Build patterns from the parser list + zsh (alias to bash).
+            local ft_patterns = vim.deepcopy(parsers_to_ensure)
+            -- Add filetypes that differ from parser name
+            vim.list_extend(ft_patterns, {
+                "javascriptreact", -- mapped to `javascript` parser by TS
+                "typescriptreact", -- mapped to `tsx` parser
+                "zsh", -- alias → bash
+                "sh", -- alias → bash
+            })
+
             vim.api.nvim_create_autocmd("FileType", {
                 group = group,
-                pattern = {
-                    "bash",
-                    "c",
-                    "cpp",
-                    "css",
-                    "dockerfile",
-                    "gitignore",
-                    "go",
-                    "graphql",
-                    "html",
-                    "java",
-                    "javascript",
-                    "javascriptreact",
-                    "json",
-                    "lua",
-                    "markdown",
-                    "prisma",
-                    "python",
-                    "query",
-                    "regex",
-                    "rust",
-                    "sh",
-                    "svelte",
-                    "typescript",
-                    "typescriptreact",
-                    "typst",
-                    "vim",
-                    "vimdoc",
-                    "yaml",
-                    "zsh",
-                },
+                pattern = ft_patterns,
                 callback = function(args)
-                    -- Highlighting (Neovim)
-                    pcall(vim.treesitter.start, args.buf)
+                    local buf = args.buf
 
-                    -- Folds (Neovim)
-                    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-                    vim.wo.foldmethod = "expr"
+                    -- Highlighting — provided by Neovim core (not the plugin).
+                    -- pcall guards against missing/broken parsers gracefully.
+                    pcall(vim.treesitter.start, buf)
 
-                    -- Indentation (nvim-treesitter)
+                    -- Folding — provided by Neovim core.
+                    -- Use the [0][0] double-index to scope to this window+buffer
+                    -- combination only (Neovim 0.12 recommendation).
+                    vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+                    vim.wo[0][0].foldmethod = "expr"
+                    vim.wo[0][0].foldenable = false -- start with folds open
+
+                    -- Indentation — provided by nvim-treesitter (experimental).
+                    -- Only set if the plugin loaded successfully.
                     if ok then
-                        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                        vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
                     end
                 end,
             })
 
-            -- If `tree-sitter` CLI is missing, parser installs/updates will fail.
-            -- Keep startup quiet, but surface a single warning to avoid confusion.
+            -- ── 7. Warn once if tree-sitter CLI is missing ───────────────────────
+            -- The new main branch requires the CLI to compile parsers.
+            -- :TSInstall and :TSUpdate will silently fail without it.
             if vim.fn.executable("tree-sitter") == 0 and not vim.g.rishav_warned_tree_sitter_cli then
                 vim.g.rishav_warned_tree_sitter_cli = true
                 vim.schedule(function()
                     vim.notify(
-                        "tree-sitter-cli not found: install it to use :TSInstall/:TSUpdate",
+                        "[treesitter] tree-sitter-cli not found.\n"
+                            .. "Install it to use :TSInstall / :TSUpdate.\n"
+                            .. "  cargo install tree-sitter-cli  OR  npm i -g tree-sitter-cli",
                         vim.log.levels.WARN
                     )
                 end)
