@@ -39,6 +39,7 @@ return {
                 "pyright",
                 "gopls",
                 "clangd",
+                "rust_analyzer",
                 -- LaTeX
                 "texlab",
                 -- Typst

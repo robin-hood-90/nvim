@@ -1,37 +1,24 @@
 return {
-    on_attach = function(client, bufnr)
-        if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end
-    end,
-    -- cmd = {
-    --   "rustup",
-    --   "run",
-    --   "stable",
-    --   "rust-analyzer",
-    -- },
+    -- NOTE: Avoid `init_options` for rust-analyzer.
+    -- nvim-lspconfig auto-populates initializationOptions from `settings["rust-analyzer"]`.
     settings = {
         ["rust-analyzer"] = {
             cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = true,
+                -- Modern equivalent of the old `cargo.allFeatures = true`.
+                features = "all",
                 buildScripts = {
                     enable = true,
                 },
             },
-            checkOnSave = true, -- Enable check on save (cargo check diagnostics)
             procMacro = {
-                enable = true, -- Needed for macro expansion
+                enable = true,
             },
+            checkOnSave = true,
             check = {
-                command = "clippy", -- Use clippy for checks
+                command = "clippy",
             },
-            -- Enable native rust-analyzer diagnostics (real-time while typing)
             diagnostics = {
                 enable = true,
-                experimental = {
-                    enable = true,
-                },
             },
         },
     },
