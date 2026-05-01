@@ -75,13 +75,6 @@ return {
                     filter = { event = "msg_showmode" },
                 },
             },
-            presets = {
-                bottom_search = false,
-                command_palette = true, -- Position cmdline and popupmenu together
-                long_message_to_split = true,
-                lsp_doc_border = true,
-                inc_rename = true,
-            },
             views = {
                 cmdline_popup = {
                     position = {
@@ -124,24 +117,11 @@ return {
         })
 
         -- Cmdline mode keymaps for popupmenu navigation
-        -- Ctrl+j/k and Tab/Shift+Tab for navigating completion menu
-        vim.keymap.set("c", "<C-j>", function()
-            if vim.fn.pumvisible() == 1 then
-                return "<C-n>"
-            else
-                return "<C-j>"
-            end
-        end, { expr = true, desc = "Next completion item" })
-
-        vim.keymap.set("c", "<C-k>", function()
-            if vim.fn.pumvisible() == 1 then
-                return "<C-p>"
-            else
-                return "<C-k>"
-            end
-        end, { expr = true, desc = "Previous completion item" })
-
-        -- NOTE: Cmdline Tab/S-Tab handled by nvim-cmp's cmdline setup
+        -- <C-n>/<C-p> in cmdline with nvim-cmp trigger completion AND navigate
+        vim.keymap.set("c", "<Tab>", "<C-n>", { desc = "Cmdline: next completion" })
+        vim.keymap.set("c", "<S-Tab>", "<C-p>", { desc = "Cmdline: previous completion" })
+        vim.keymap.set("c", "<C-j>", "<C-n>", { desc = "Next completion item" })
+        vim.keymap.set("c", "<C-k>", "<C-p>", { desc = "Previous completion item" })
 
         -- LSP hover doc scrolling
         vim.keymap.set({ "n", "i", "s" }, "<C-f>", function()

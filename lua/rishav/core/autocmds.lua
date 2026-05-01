@@ -138,3 +138,24 @@ autocmd("ColorScheme", {
 
 -- Apply custom highlights on startup
 set_custom_highlights()
+
+-- Trigger cmp completion as user types in cmdline
+-- nvim-cmp's TextChanged autocomplete only works in insert mode,
+-- so we explicitly handle cmdline mode via CmdlineChanged
+autocmd("CmdlineChanged", {
+    desc = "Auto-trigger cmp completion in cmdline",
+    group = augroup("cmdline_completion"),
+    pattern = "*",
+    callback = function()
+        local cmdtype = vim.fn.getcmdtype()
+        if cmdtype ~= ":" and cmdtype ~= "/" and cmdtype ~= "?" then
+            return
+        end
+        vim.schedule(function()
+            local ok, cmp = pcall(require, "cmp")
+            if ok then
+                cmp.complete()
+            end
+        end)
+    end,
+})

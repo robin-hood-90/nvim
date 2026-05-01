@@ -208,54 +208,18 @@ return {
             })
 
             -- Cmdline setup for search
+            -- Tab/S-Tab for popupmenu navigation handled by noice.lua
             cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline({
-                    ["<Tab>"] = {
-                        c = function()
-                            if cmp.visible() then
-                                cmp.confirm({ select = true })
-                            else
-                                cmp.complete()
-                            end
-                        end,
-                    },
-                    ["<S-Tab>"] = {
-                        c = function()
-                            if cmp.visible() then
-                                cmp.select_prev_item()
-                            else
-                                cmp.complete()
-                            end
-                        end,
-                    },
-                }),
+                mapping = cmp.mapping.preset.cmdline(),
                 sources = {
                     { name = "buffer" },
                 },
             })
 
             -- Cmdline setup for commands
+            -- Tab/S-Tab for popupmenu navigation handled by noice.lua
             cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline({
-                    ["<Tab>"] = {
-                        c = function()
-                            if cmp.visible() then
-                                cmp.confirm({ select = true })
-                            else
-                                cmp.complete()
-                            end
-                        end,
-                    },
-                    ["<S-Tab>"] = {
-                        c = function()
-                            if cmp.visible() then
-                                cmp.select_prev_item()
-                            else
-                                cmp.complete()
-                            end
-                        end,
-                    },
-                }),
+                mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources({
                     { name = "path" },
                 }, {
