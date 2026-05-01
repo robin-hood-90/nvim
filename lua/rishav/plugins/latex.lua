@@ -46,7 +46,8 @@ return {
         end
 
         -- ── Viewer (Okular) ────────────────────────────────────────────────
-        -- Use Okular with SyncTeX support for forward/inverse search
+        -- Use Okular with SyncTeX support for forward/inverse search.
+        -- texlab is configured to match this viewer.
         -- Keybindings: \lv to view PDF, \ll to compile
         vim.g.vimtex_view_method = "general"
         vim.g.vimtex_view_general_viewer = "okular"

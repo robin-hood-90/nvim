@@ -11,6 +11,43 @@ local icons = require("rishav.core.icons")
 
 local map = utils.map
 
+---@param client vim.lsp.Client
+---@param bufnr integer
+local function setup_codelens(client, bufnr)
+    if not client:supports_method("textDocument/codeLens", bufnr) then
+        return
+    end
+
+    local function refresh_codelens()
+        local filter = { bufnr = bufnr }
+        if vim.lsp.codelens.is_enabled(filter) then
+            vim.lsp.codelens.enable(false, filter)
+        end
+        vim.lsp.codelens.enable(true, filter)
+    end
+
+    refresh_codelens()
+
+    local group = vim.api.nvim_create_augroup("lsp_codelens_" .. bufnr, { clear = true })
+    vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "BufWritePost" }, {
+        buffer = bufnr,
+        group = group,
+        callback = function()
+            if vim.api.nvim_buf_is_valid(bufnr) then
+                refresh_codelens()
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd("LspDetach", {
+        buffer = bufnr,
+        group = group,
+        callback = function()
+            vim.api.nvim_clear_autocmds({ group = group })
+        end,
+    })
+end
+
 ---Setup LSP keymaps for a buffer
 ---@param client vim.lsp.Client
 ---@param bufnr integer
@@ -63,7 +100,7 @@ local function setup_keymaps(client, bufnr)
     -- Inlay hints toggle (if supported)
     if client:supports_method("textDocument/inlayHint", bufnr) then
         map("n", "<leader>ch", function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
         end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
     end
 
@@ -71,7 +108,11 @@ local function setup_keymaps(client, bufnr)
     if client:supports_method("textDocument/codeLens", bufnr) then
         map("n", "<leader>cl", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
         map("n", "<leader>cL", function()
-            vim.lsp.codelens.enable(true, { bufnr = bufnr })
+            local filter = { bufnr = bufnr }
+            if vim.lsp.codelens.is_enabled(filter) then
+                vim.lsp.codelens.enable(false, filter)
+            end
+            vim.lsp.codelens.enable(true, filter)
         end, vim.tbl_extend("force", opts, { desc = "Enable codelens" }))
     end
 end
@@ -85,6 +126,12 @@ local function on_attach(client, bufnr)
 
     -- Setup keymaps
     setup_keymaps(client, bufnr)
+
+    if client:supports_method("textDocument/inlayHint", bufnr) then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
+    setup_codelens(client, bufnr)
 
     -- Document highlight on cursor hold (if supported)
     if client:supports_method("textDocument/documentHighlight", bufnr) then
@@ -123,9 +170,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
     end,
 })
-
--- Enable inlay hints globally by default
-vim.lsp.inlay_hint.enable(true)
 
 -- Configure diagnostic signs using icons module
 vim.diagnostic.config({

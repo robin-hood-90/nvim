@@ -47,28 +47,12 @@ return {
                 -- NOTE: jdtls removed - handled by nvim-jdtls in ftplugin/java.lua
                 -- jdtls package installation is managed by mason-tool-installer
             },
-            automatic_installation = true,
+            automatic_enable = {
+                exclude = { "jdtls" },
+            },
         },
         config = function(_, opts)
             require("mason-lspconfig").setup(opts)
-
-            -- Enable all installed servers except jdtls (handled by nvim-jdtls)
-            -- Skip servers that don't have a valid config (returns nil)
-            vim.schedule(function()
-                local servers = require("mason-lspconfig").get_installed_servers()
-                for _, server in ipairs(servers) do
-                    if server ~= "jdtls" then
-                        -- Check if server config exists and is valid
-                        local ok, config = pcall(require, "after.lsp." .. server)
-                        if ok and config ~= nil then
-                            vim.lsp.enable(server)
-                        elseif not ok or config == nil then
-                            -- Try to enable anyway - nvim-lspconfig will handle it
-                            vim.lsp.enable(server)
-                        end
-                    end
-                end
-            end)
         end,
     },
 

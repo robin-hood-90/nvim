@@ -8,7 +8,7 @@
 ---
 --- Forward search is handled by VimTeX (<localleader>lv). texlab's
 --- build.onSave is disabled because VimTeX runs latexmk -pvc in
---- continuous mode instead.
+--- continuous mode instead, and both are configured for Okular.
 ---
 --- NOTE: texlab requires LaTeX to be installed. If not available,
 --- this LSP will not start.
@@ -39,13 +39,13 @@ return {
                 forwardSearchAfter = false,
             },
 
-            -- ── Forward search (Nvim → Zathura) ──────────────────────────
-            -- VimTeX's <localleader>lv uses zathura directly via vimtex_view_method.
+            -- ── Forward search (Nvim → Okular) ───────────────────────────
+            -- VimTeX's <localleader>lv uses Okular via vimtex_view_method.
             -- texlab's forwardSearch is used by texlab LSP clients; we configure
             -- it here so it works if triggered via LSP as well.
             forwardSearch = {
-                executable = "zathura",
-                args = { "--synctex-forward", "%l:1:%f", "%p" },
+                executable = "okular",
+                args = { "--unique", "file:%p#src:%l%f" },
             },
 
             -- ── Chktex ───────────────────────────────────────────────────

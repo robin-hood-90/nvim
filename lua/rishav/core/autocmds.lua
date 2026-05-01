@@ -107,7 +107,7 @@ autocmd("BufWritePre", {
 autocmd("FileType", {
     desc = "Disable conceallevel for specific filetypes",
     group = augroup("no_conceal"),
-    pattern = { "json", "jsonc", "markdown" },
+    pattern = { "json", "json5", "jsonc", "markdown" },
     callback = function()
         vim.opt_local.conceallevel = 0
     end,
@@ -121,16 +121,6 @@ autocmd("FileType", {
     callback = function()
         vim.opt_local.wrap = true
         vim.opt_local.spell = true
-    end,
-})
-
--- Fix conceallevel for json files
-autocmd("FileType", {
-    desc = "Fix JSON files conceallevel",
-    group = augroup("json_conceal"),
-    pattern = { "json", "jsonc", "json5" },
-    callback = function()
-        vim.opt_local.conceallevel = 0
     end,
 })
 

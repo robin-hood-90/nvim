@@ -151,13 +151,11 @@ opt.foldcolumn = "0"
 --------------------------------------------------------------------------------
 -- Diagnostics (Modern Neovim 0.10+)
 --------------------------------------------------------------------------------
-local icons = require("rishav.core.icons")
-
 vim.diagnostic.config({
     virtual_text = {
         spacing = 4,
         source = "if_many",
-        prefix = icons.ui.circle,
+        prefix = "",
     },
     float = {
         focusable = true,
@@ -168,7 +166,6 @@ vim.diagnostic.config({
         prefix = "",
     },
     underline = true,
-    signs = icons.get_diagnostic_signs(),
     severity_sort = true,
     update_in_insert = false,
 })

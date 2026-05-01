@@ -29,7 +29,7 @@ return {
                 save_on_toggle = true,
                 sync_on_ui_close = true,
                 key = function()
-                    return vim.loop.cwd()
+                    return vim.uv.cwd()
                 end,
             },
         })
@@ -62,25 +62,11 @@ return {
         end, { desc = "Harpoon: Toggle menu" })
 
         -- Quick select using number keys (very ergonomic!)
-        vim.keymap.set("n", "<M-1>", function()
-            harpoon:list():select(1)
-        end, { desc = "Harpoon: File 1" })
-
-        vim.keymap.set("n", "<M-2>", function()
-            harpoon:list():select(2)
-        end, { desc = "Harpoon: File 2" })
-
-        vim.keymap.set("n", "<M-3>", function()
-            harpoon:list():select(3)
-        end, { desc = "Harpoon: File 3" })
-
-        vim.keymap.set("n", "<M-4>", function()
-            harpoon:list():select(4)
-        end, { desc = "Harpoon: File 4" })
-
-        vim.keymap.set("n", "<M-5>", function()
-            harpoon:list():select(5)
-        end, { desc = "Harpoon: File 5" })
+        for index = 1, 5 do
+            vim.keymap.set("n", "<M-" .. index .. ">", function()
+                harpoon:list():select(index)
+            end, { desc = "Harpoon: File " .. index })
+        end
 
         -- Bracket navigation (consistent with other [ ] motions)
         vim.keymap.set("n", "[s", function()

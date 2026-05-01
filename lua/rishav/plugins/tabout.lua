@@ -2,7 +2,7 @@
 ---Tabout configuration (Tab mapping handled by nvim-cmp)
 return {
     "abecodes/tabout.nvim",
-    lazy = false,
+    event = "InsertCharPre",
     config = function()
         require("tabout").setup({
             tabkey = "", -- Disabled: Tab is handled by nvim-cmp's unified mapping
@@ -31,6 +31,5 @@ return {
         "L3MON4D3/LuaSnip",
         "hrsh7th/nvim-cmp",
     },
-    event = "InsertCharPre",
     priority = 1000,
 }

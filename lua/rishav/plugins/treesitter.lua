@@ -137,12 +137,7 @@ return {
             -- sh files also use the bash parser.
             pcall(vim.treesitter.language.register, "bash", "sh")
 
-            -- ── 5. Autotag setup ──────────────────────────────────────────────────
-            pcall(function()
-                require("nvim-ts-autotag").setup()
-            end)
-
-            -- ── 6. Enable TS features per filetype via autocmd ───────────────────
+            -- ── 5. Enable TS features per filetype via autocmd ───────────────────
             -- On the new main branch, highlighting, folding, and indentation are
             -- NOT enabled by setup(). You must wire them up yourself.
             -- `vim.wo[0][0]` is the window-local scoping syntax for 0.12+ to avoid
@@ -184,7 +179,7 @@ return {
                 end,
             })
 
-            -- ── 7. Warn once if tree-sitter CLI is missing ───────────────────────
+            -- ── 6. Warn once if tree-sitter CLI is missing ───────────────────────
             -- The new main branch requires the CLI to compile parsers.
             -- :TSInstall and :TSUpdate will silently fail without it.
             if vim.fn.executable("tree-sitter") == 0 and not vim.g.rishav_warned_tree_sitter_cli then
@@ -192,8 +187,8 @@ return {
                 vim.schedule(function()
                     vim.notify(
                         "[treesitter] tree-sitter-cli not found.\n"
-                            .. "Install it to use :TSInstall / :TSUpdate.\n"
-                            .. "  cargo install tree-sitter-cli  OR  npm i -g tree-sitter-cli",
+                            .. "Install it from your system package manager or cargo to use :TSInstall / :TSUpdate.\n"
+                            .. "  cargo install tree-sitter-cli",
                         vim.log.levels.WARN
                     )
                 end)

@@ -44,10 +44,6 @@ local M = {
     },
     config = function(_, opts)
         -- Set fold indicators: right arrow for closed, down arrow for open
-        vim.o.foldcolumn = "1" -- Show fold column
-        vim.o.foldlevel = 99 -- Start with all folds open
-        vim.o.foldlevelstart = 99 -- Ensure files open with all folds expanded
-        vim.o.foldenable = true -- Enable folding
         vim.o.fillchars = [[eob: ,fold: ,foldopen:▼,foldclose:▶,foldsep:│]]
 
         -- Clear Folded highlight to avoid background/foreground highlighting
