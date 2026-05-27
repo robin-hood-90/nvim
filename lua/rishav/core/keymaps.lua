@@ -27,6 +27,19 @@ map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 map("n", "<leader>W", "<cmd>wa<CR>", { desc = "Save all" })
 map("n", "<Esc>", "<cmd>nohl<CR>", { desc = "Clear highlights" })
 
+-- for competitive programming
+vim.keymap.set("n", "<leader>rs", function()
+    vim.cmd("w") -- save file
+
+    local run_sh = vim.fn.getcwd() .. "/run.sh"
+
+    if vim.fn.filereadable(run_sh) == 1 then
+        vim.cmd("!./run.sh")
+    else
+        vim.notify("run.sh not found in current directory", vim.log.levels.WARN)
+    end
+end, { desc = "Run run.sh" })
+
 -- Quick access (no leader needed for frequent ops)
 map("n", "<BS>", "X", { desc = "Delete char before" })
 
