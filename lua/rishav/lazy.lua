@@ -39,7 +39,7 @@ require("lazy").setup({
     },
 
     install = {
-        colorscheme = { "catppuccin", "habamax" },
+        colorscheme = { "rose-pine", "habamax" },
         missing = true, -- Install missing plugins on startup
     },
 
