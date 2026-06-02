@@ -12,6 +12,7 @@ return {
         "--header-insertion-decorators",
         "--function-arg-placeholders",
         "--completion-style=detailed",
+        "--fallback-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}",
     },
     filetypes = { "c", "cpp", "objc", "objcpp" },
 }
