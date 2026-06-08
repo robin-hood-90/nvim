@@ -16,6 +16,8 @@ return {
                 render = "wrapped-compact",
                 stages = "fade",
                 top_down = true,
+                merge_duplicates = true,
+                background_colour = "#191724",
             },
         },
     },

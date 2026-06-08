@@ -194,14 +194,14 @@ return {
                 },
             })
 
-            -- Cmdline setup for search
-            -- Tab/S-Tab for popupmenu navigation handled by noice.lua
-            cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = {
-                    { name = "buffer" },
-                },
-            })
+            -- -- Cmdline setup for search
+            -- -- Tab/S-Tab for popupmenu navigation handled by noice.lua
+            -- cmp.setup.cmdline({ "/", "?" }, {
+            --     mapping = cmp.mapping.preset.cmdline(),
+            --     sources = {
+            --         { name = "buffer" },
+            --     },
+            -- })
 
             -- Cmdline setup for commands
             -- Tab/S-Tab for popupmenu navigation handled by noice.lua

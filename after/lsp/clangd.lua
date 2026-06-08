@@ -6,7 +6,7 @@ return {
         "--pch-storage=memory",
         "--all-scopes-completion",
         "--pretty",
-        "--header-insertion=never",
+        "--header-insertion=iwyu",
         "-j=4",
         "--inlay-hints",
         "--header-insertion-decorators",

@@ -15,7 +15,7 @@ return {
             styles = {
                 bold = true,
                 italic = true,
-                transparency = false,
+                transparency = true,
             },
             highlight_groups = {
                 -- Syntax style overrides
@@ -41,11 +41,5 @@ return {
         })
 
         vim.cmd.colorscheme("rose-pine")
-
-        -- Ensure notify has proper background for transparency
-        local ok, notify = pcall(require, "notify")
-        if ok then
-            notify.setup({ background_colour = "#191724" })
-        end
     end,
 }
