@@ -31,8 +31,5 @@ return {
         vim.lsp.config("*", {
             capabilities = capabilities,
         })
-
-        -- Disable jdtls auto-start (handled by nvim-jdtls in ftplugin/java.lua)
-        vim.lsp.enable("jdtls", false)
     end,
 }

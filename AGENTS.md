@@ -4,7 +4,7 @@ This document provides guidance for AI coding agents working on this Neovim conf
 
 ## Project Overview
 
-- **Neovim Version**: 0.11.4 (uses modern 0.11+ features like `vim.lsp.config`, `vim.lsp.enable`, `winborder`)
+- **Neovim Version**: 0.12.1 (uses modern 0.11+ features like `vim.lsp.config`, `vim.lsp.enable`, `winborder`)
 - **Plugin Manager**: lazy.nvim (folke/lazy.nvim)
 - **Author**: Rishav
 - **Namespace**: All modules under `lua/rishav/`

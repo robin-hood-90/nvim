@@ -136,10 +136,7 @@ opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "glob
 --------------------------------------------------------------------------------
 -- Completion
 --------------------------------------------------------------------------------
-opt.completeopt = "menu,menuone,noinsert,preview"
-opt.wildmode = "longest:full,full"
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
-
 --------------------------------------------------------------------------------
 -- Folding (use treesitter/ufo)
 --------------------------------------------------------------------------------

@@ -65,7 +65,7 @@ return {
                 },
 
                 completion = {
-                    completeopt = "menu,menuone,noinsert,preview",
+                    completeopt = "menu,menuone,noselect",
                 },
 
                 mapping = cmp.mapping.preset.insert({
@@ -195,28 +195,15 @@ return {
             })
 
             -- -- Cmdline setup for search
-            -- -- Tab/S-Tab for popupmenu navigation handled by noice.lua
-            -- cmp.setup.cmdline({ "/", "?" }, {
-            --     mapping = cmp.mapping.preset.cmdline(),
-            --     sources = {
-            --         { name = "buffer" },
-            --     },
-            -- })
-
-            -- Cmdline setup for commands
             -- Tab/S-Tab for popupmenu navigation handled by noice.lua
-            cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = "path" },
-                }, {
-                    { name = "cmdline", option = { ignore_cmds = { "Man", "!" } } },
-                }),
-                ---@diagnostic disable-next-line: missing-fields
-                matching = {
-                    disallow_symbol_nonprefix_matching = false,
-                },
-            })
+            -- cmp.setup.cmdline(":", {
+            --     mapping = cmp.mapping.preset.cmdline(),
+            --     sources = cmp.config.sources({
+            --         { name = "path" },
+            --     }, {
+            --         { name = "cmdline", option = { ignore_cmds = { "Man", "!" } } },
+            --     }),
+            -- })
         end,
     },
 }

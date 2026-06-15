@@ -1,3 +1,4 @@
+-- noice.nvim — full config with keybinds
 return {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -6,160 +7,195 @@ return {
         {
             "rcarriga/nvim-notify",
             opts = {
-                timeout = 2500,
-                max_height = function()
-                    return math.floor(vim.o.lines * 0.5)
-                end,
-                max_width = function()
-                    return math.floor(vim.o.columns * 0.5)
-                end,
+                -- Fix: "Highlight group 'NotifyBackground' has no background highlight"
+                -- Set this to your terminal/colorscheme background, or "NONE" for transparent
+                background_colour = "#000000",
+                fps = 60,
                 render = "wrapped-compact",
-                stages = "fade",
-                top_down = true,
-                merge_duplicates = true,
-                background_colour = "#191724",
+                timeout = 3000,
+                max_width = 60,
+                stages = "fade", -- "fade" | "slide" | "fade_in_slide_out" | "static"
+                top_down = false, -- notifications stack from bottom-right up
+                icons = {
+                    ERROR = "",
+                    WARN = "",
+                    INFO = "",
+                    DEBUG = "",
+                    TRACE = "✎",
+                },
             },
         },
     },
-    config = function()
-        require("noice").setup({
-            cmdline = {
+
+    opts = {
+        -- ── LSP ──────────────────────────────────────────────────────────────
+        lsp = {
+            override = {
+                ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+                ["vim.lsp.util.stylize_markdown"] = true,
+                ["cmp.entry.get_documentation"] = true,
+            },
+            progress = {
                 enabled = true,
-                view = "cmdline_popup",
-                format = {
-                    cmdline = { pattern = "^:", icon = " ", lang = "vim" },
-                    search_down = { kind = "search", pattern = "^/", icon = "  ", lang = "regex" },
-                    search_up = { kind = "search", pattern = "^%?", icon = "  ", lang = "regex" },
-                    filter = { pattern = "^:%s*!", icon = " $", lang = "bash" },
-                    lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = " ", lang = "lua" },
-                    help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋖 " },
+                format = "lsp_progress",
+                format_done = "lsp_progress_done",
+                throttle = 1000 / 30,
+                view = "mini",
+            },
+            hover = {
+                enabled = true,
+                silent = true,
+            },
+            signature = {
+                enabled = true,
+                auto_open = {
+                    enabled = true,
+                    trigger = true,
+                    luasnip = true,
+                    throttle = 50,
                 },
             },
-            messages = {
-                enabled = true,
-                view = "mini",
-                view_error = "mini",
-                view_warn = "mini",
+        },
+
+        -- ── Cmdline ───────────────────────────────────────────────────────────
+        cmdline = {
+            enabled = true,
+            view = "cmdline_popup",
+            format = {
+                cmdline = { pattern = "^:", icon = "", lang = "vim" },
+                search_down = { kind = "search", icon = " ", lang = "regex" },
+                search_up = { kind = "search", icon = " ", lang = "regex" },
+                filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+                lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+                help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋗" },
+                input = { view = "cmdline_input", icon = "󰥻 " },
+            },
+        },
+
+        -- ── Messages ──────────────────────────────────────────────────────────
+        messages = {
+            enabled = true,
+            view = "notify",
+            view_error = "notify",
+            view_warn = "notify",
+            view_history = "messages",
+            view_search = "virtualtext",
+        },
+
+        -- ── Popupmenu ─────────────────────────────────────────────────────────
+        popupmenu = {
+            enabled = true,
+            backend = "cmp",
+        },
+
+        -- ── Redirect ──────────────────────────────────────────────────────────
+        redirect = {
+            view = "popup",
+            filter = { event = "msg_show" },
+        },
+
+        -- ── Notify backend ───────────────────────────────────────────────────
+        notify = {
+            enabled = true,
+            view = "notify",
+        },
+
+        -- ── Presets ───────────────────────────────────────────────────────────
+        presets = {
+            bottom_search = false,
+            command_palette = true,
+            long_message_to_split = true,
+            inc_rename = false,
+            lsp_doc_border = true,
+        },
+
+        -- ── Routes ────────────────────────────────────────────────────────────
+        routes = {
+            {
+                filter = {
+                    event = "msg_show",
+                    any = {
+                        { find = "%d+L, %d+B" },
+                        { find = "; after #%d+" },
+                        { find = "; before #%d+" },
+                        { find = "%d+ fewer lines" },
+                        { find = "%d+ more lines" },
+                        { find = "%d+ lines yanked" },
+                        { find = "^Hunk %d+ of %d+" },
+                    },
+                },
+                opts = { skip = true },
+            },
+            {
+                filter = { event = "msg_show", min_height = 12 },
+                view = "split",
+            },
+            {
+                filter = { event = "msg_show", kind = "emsg" },
+                opts = { title = "Error" },
+                view = "notify",
+            },
+        },
+
+        -- ── Views ─────────────────────────────────────────────────────────────
+        views = {
+            cmdline_popup = {
+                border = { style = "rounded" },
+                position = { row = "40%", col = "50%" },
+                size = { width = 60, height = "auto" },
             },
             popupmenu = {
-                enabled = true,
-                backend = "nui",
+                relative = "editor",
+                position = { row = 8, col = "50%" },
+                size = { width = 60, height = 10 },
+                border = { style = "rounded", padding = { 0, 1 } },
+                win_options = { winhighlight = { Normal = "Normal", FloatBorder = "DiagnosticInfo" } },
             },
-            lsp = {
-                progress = { enabled = true },
-                override = {
-                    ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                    ["vim.lsp.util.stylize_markdown"] = true,
-                    ["cmp.entry.get_documentation"] = true,
-                },
-                hover = { enabled = true },
-                signature = { enabled = true },
+            mini = {
+                win_options = { winblend = 0 },
+                position = { row = -2, col = "100%" },
             },
-            routes = {
-                -- Hide written messages
-                {
-                    filter = {
-                        event = "msg_show",
-                        any = {
-                            { find = "%d+L, %d+B" },
-                            { find = "; after #%d+" },
-                            { find = "; before #%d+" },
-                            { find = "fewer lines" },
-                            { find = "more lines" },
-                            { find = "^E486:" }, -- Pattern not found
-                        },
-                    },
-                    opts = { skip = true },
-                },
-                -- Show macro recording
-                {
-                    view = "notify",
-                    filter = { event = "msg_showmode" },
-                },
+            notify = {
+                merge = false,
+                replace = false,
             },
-            views = {
-                cmdline_popup = {
-                    position = {
-                        row = 5,
-                        col = "50%",
-                    },
-                    size = {
-                        width = 60,
-                        height = "auto",
-                    },
-                    border = {
-                        style = "rounded",
-                        padding = { 0, 1 },
-                    },
-                    win_options = {
-                        winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
-                    },
-                },
-                popupmenu = {
-                    relative = "editor",
-                    position = {
-                        row = 8,
-                        col = "50%",
-                    },
-                    size = {
-                        width = 60,
-                        height = 10,
-                    },
-                    border = {
-                        style = "rounded",
-                        padding = { 0, 1 },
-                    },
-                },
-                mini = {
-                    win_options = {
-                        winblend = 0,
-                    },
-                },
-            },
-        })
+        },
+    },
 
-        -- Cmdline mode keymaps for popupmenu navigation
-        -- <C-n>/<C-p> in cmdline with nvim-cmp trigger completion AND navigate
-        vim.keymap.set("c", "<Tab>", "<C-n>", { desc = "Cmdline: next completion" })
-        vim.keymap.set("c", "<S-Tab>", "<C-p>", { desc = "Cmdline: previous completion" })
-        vim.keymap.set("c", "<C-j>", "<C-n>", { desc = "Next completion item" })
-        vim.keymap.set("c", "<C-k>", "<C-p>", { desc = "Previous completion item" })
-
-        -- LSP hover doc scrolling
-        vim.keymap.set({ "n", "i", "s" }, "<C-f>", function()
-            if not require("noice.lsp").scroll(4) then
-                return "<C-f>"
-            end
-        end, { silent = true, expr = true, desc = "Scroll down in hover doc" })
-
-        vim.keymap.set({ "n", "i", "s" }, "<C-b>", function()
-            if not require("noice.lsp").scroll(-4) then
-                return "<C-b>"
-            end
-        end, { silent = true, expr = true, desc = "Scroll up in hover doc" })
-    end,
+    -- ── Keymaps ───────────────────────────────────────────────────────────────
     keys = {
-        { "<leader>nd", "<cmd>NoiceDismiss<CR>", desc = "Dismiss notifications" },
         {
-            "<leader>nl",
+            "<C-f>",
             function()
-                require("noice").cmd("last")
+                if not require("noice.lsp").scroll(4) then
+                    return "<C-f>"
+                end
             end,
-            desc = "Last message",
+            silent = true,
+            expr = true,
+            mode = { "i", "n", "s" },
+            desc = "Scroll forward (noice/doc)",
         },
         {
-            "<leader>nh",
+            "<C-b>",
             function()
-                require("noice").cmd("history")
+                if not require("noice.lsp").scroll(-4) then
+                    return "<C-b>"
+                end
             end,
-            desc = "Message history",
+            silent = true,
+            expr = true,
+            mode = { "i", "n", "s" },
+            desc = "Scroll backward (noice/doc)",
         },
-        {
-            "<leader>na",
-            function()
-                require("noice").cmd("all")
-            end,
-            desc = "All messages",
-        },
+        { "<leader>nl", "<cmd>Noice last<cr>", desc = "Noice: last message" },
+        { "<leader>nh", "<cmd>Noice history<cr>", desc = "Noice: message history" },
+        { "<leader>na", "<cmd>Noice all<cr>", desc = "Noice: all messages" },
+        { "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Noice: dismiss notifications" },
+        { "<leader>nt", "<cmd>Noice toggle<cr>", desc = "Noice: toggle" },
+        { "<leader>fn", "<cmd>Noice telescope<cr>", desc = "Telescope: noice messages" },
+        { "<leader>ne", "<cmd>Noice enable<cr>", desc = "Noice: enable" },
+        { "<leader>nx", "<cmd>Noice disable<cr>", desc = "Noice: disable" },
+        { "K", vim.lsp.buf.hover, desc = "LSP hover doc" },
     },
 }

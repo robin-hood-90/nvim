@@ -1,14 +1,18 @@
-local home = os.getenv("HOME")
-local workspace_path = home .. "/.local/share/nvim/jdtls-workspace/"
-local root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
-local project_name = vim.fn.fnamemodify(root_dir or vim.fn.getcwd(), ":p:h:t")
-local workspace_dir = workspace_path .. project_name
-
--- Check if jdtls is available
+-- Check if jdtls is available (must be first - before any jdtls calls)
 local status, jdtls = pcall(require, "jdtls")
 if not status then
+    vim.notify(
+        "JDTLS not available. Ensure nvim-jdtls is installed.\nRun :Lazy to check plugin status.",
+        vim.log.levels.WARN
+    )
     return
 end
+
+local home = os.getenv("HOME")
+local workspace_path = home .. "/.local/share/nvim/jdtls-workspace/"
+local root_dir = jdtls.setup.find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
+local project_name = vim.fn.fnamemodify(root_dir or vim.fn.getcwd(), ":p:h:t")
+local workspace_dir = workspace_path .. project_name
 
 local function get_jdtls_jar()
     local jar =
