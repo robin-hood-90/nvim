@@ -13,7 +13,7 @@ return {
                 timeout = 3000,
                 max_width = 60,
                 stages = "fade", -- "fade" | "slide" | "fade_in_slide_out" | "static"
-                top_down = false, -- notifications stack from bottom-right up
+                top_down = true, -- notifications stack from bottom-right up
                 icons = {
                     ERROR = "",
                     WARN = "",
