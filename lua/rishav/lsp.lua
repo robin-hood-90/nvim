@@ -94,8 +94,8 @@ local function setup_keymaps(client, bufnr)
     -- LSP management (leader + c for code operations)
     map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
     -- Note: Formatting is handled by conform.nvim with <leader>l
-    map("n", "<leader>ci", "<cmd>LspInfo<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
-    map("n", "<leader>cR", "<cmd>LspRestart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+    map("n", "<leader>ci", "<cmd>checkhealth vim.lsp<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
+    map("n", "<leader>cR", "<cmd>lsp restart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
 
     -- Inlay hints toggle (if supported)
     if client:supports_method("textDocument/inlayHint", bufnr) then
@@ -122,7 +122,6 @@ end
 ---@param bufnr integer
 local function on_attach(client, bufnr)
     -- Enable completion
-    vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Setup keymaps
     setup_keymaps(client, bufnr)
@@ -165,8 +164,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
     callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        if client then
-            on_attach(client, ev.buf)
+        if not client then
+            return
+        end
+        on_attach(client, ev.buf)
+
+        if client.name == "svelte" then
+            local svelte_group = vim.api.nvim_create_augroup("rishav_svelte_notify_" .. ev.buf, { clear = true })
+            vim.api.nvim_create_autocmd("BufWritePost", {
+                group = svelte_group,
+                pattern = { "*.js", "*.ts" },
+                callback = function(ctx)
+                    if client:is_active() then
+                        client.notify("$/onDidChangeTsOrJsFile", { uri = vim.uri_from_fname(ctx.match) })
+                    end
+                end,
+            })
         end
     end,
 })

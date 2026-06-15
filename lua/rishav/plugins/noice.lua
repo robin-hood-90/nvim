@@ -7,9 +7,7 @@ return {
         {
             "rcarriga/nvim-notify",
             opts = {
-                -- Fix: "Highlight group 'NotifyBackground' has no background highlight"
-                -- Set this to your terminal/colorscheme background, or "NONE" for transparent
-                background_colour = "#000000",
+                background_colour = nil,
                 fps = 60,
                 render = "wrapped-compact",
                 timeout = 3000,
@@ -32,7 +30,7 @@ return {
         lsp = {
             override = {
                 ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                ["vim.lsp.util.stylize_markdown"] = true,
+
                 ["cmp.entry.get_documentation"] = true,
             },
             progress = {
@@ -196,6 +194,6 @@ return {
         { "<leader>fn", "<cmd>Noice telescope<cr>", desc = "Telescope: noice messages" },
         { "<leader>ne", "<cmd>Noice enable<cr>", desc = "Noice: enable" },
         { "<leader>nx", "<cmd>Noice disable<cr>", desc = "Noice: disable" },
-        { "K", vim.lsp.buf.hover, desc = "LSP hover doc" },
+
     },
 }

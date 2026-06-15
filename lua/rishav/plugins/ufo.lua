@@ -44,7 +44,11 @@ local M = {
     },
     config = function(_, opts)
         -- Set fold indicators: right arrow for closed, down arrow for open
-        vim.o.fillchars = [[eob: ,fold: ,foldopen:▼,foldclose:▶,foldsep:│]]
+        vim.opt.fillchars:append({
+            foldopen = "▼",
+            foldclose = "▶",
+            foldsep = "│",
+        })
 
         -- Clear Folded highlight to avoid background/foreground highlighting
         vim.api.nvim_set_hl(0, "Folded", { bg = "NONE", fg = "NONE" })

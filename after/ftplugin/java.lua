@@ -78,17 +78,7 @@ local function arginp()
     end)
 end
 
-local function refresh_codelens(bufnr)
-    if not vim.api.nvim_buf_is_valid(bufnr) then
-        return
-    end
 
-    local filter = { bufnr = bufnr }
-    if vim.lsp.codelens.is_enabled(filter) then
-        vim.lsp.codelens.enable(false, filter)
-    end
-    vim.lsp.codelens.enable(true, filter)
-end
 
 -- Safe handler wrapper to prevent invalid buffer errors
 local function safe_handler(handler)
@@ -270,10 +260,7 @@ local config = {
             end
         end, vim.tbl_extend("force", opts, { desc = "Extract Method" }))
 
-        -- Initial codelens enable/refresh with error handling
-        vim.schedule(function()
-            refresh_codelens(bufnr)
-        end)
+
     end,
 
     init_options = {
@@ -296,13 +283,4 @@ jdtls.start_or_attach(config, {
     },
 })
 
--- Safe codelens enable/refresh on save (use buffer only, not pattern)
-vim.api.nvim_create_autocmd("BufWritePost", {
-    buffer = vim.api.nvim_get_current_buf(),
-    callback = function()
-        vim.schedule(function()
-            local bufnr = vim.api.nvim_get_current_buf()
-            refresh_codelens(bufnr)
-        end)
-    end,
-})
+

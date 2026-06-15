@@ -110,13 +110,6 @@ function M.safe_require(module)
     return result, true
 end
 
----Merge tables recursively
----@param ... table
----@return table
-function M.merge(...)
-    return vim.tbl_deep_extend("force", ...)
-end
-
 ---Debounce a function
 ---@param fn function
 ---@param ms number
@@ -130,7 +123,7 @@ function M.debounce(fn, ms)
             ms,
             0,
             vim.schedule_wrap(function()
-                fn(unpack(args))
+                fn(table.unpack(args))
             end)
         )
     end
@@ -168,8 +161,8 @@ end
 ---Get visual selection
 ---@return string
 function M.get_visual_selection()
-    local _, ls, cs = unpack(vim.fn.getpos("v"))
-    local _, le, ce = unpack(vim.fn.getpos("."))
+    local _, ls, cs = table.unpack(vim.fn.getpos("v"))
+    local _, le, ce = table.unpack(vim.fn.getpos("."))
     return table.concat(vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {}), "\n")
 end
 

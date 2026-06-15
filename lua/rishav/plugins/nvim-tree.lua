@@ -1,7 +1,7 @@
 return {
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
-    lazy = false, -- Load immediately for directory handling
+    event = "VeryLazy",
     keys = {
         { "<leader>ee", "<cmd>NvimTreeToggle<CR>", desc = "Toggle file explorer" },
         { "<leader>ef", "<cmd>NvimTreeFindFileToggle<CR>", desc = "Toggle file explorer on current file" },
