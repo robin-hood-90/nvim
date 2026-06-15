@@ -7,7 +7,7 @@ return {
         {
             "rcarriga/nvim-notify",
             opts = {
-                background_colour = nil,
+                background_colour = "#191724",
                 fps = 60,
                 render = "wrapped-compact",
                 timeout = 3000,
@@ -194,6 +194,5 @@ return {
         { "<leader>fn", "<cmd>Noice telescope<cr>", desc = "Telescope: noice messages" },
         { "<leader>ne", "<cmd>Noice enable<cr>", desc = "Noice: enable" },
         { "<leader>nx", "<cmd>Noice disable<cr>", desc = "Noice: disable" },
-
     },
 }
