@@ -12,5 +12,4 @@ return {
         ft = "java",
         dependencies = { "mfussenegger/nvim-dap" },
     },
-    { "j-hui/fidget.nvim", event = "VeryLazy", opts = {} },
 }

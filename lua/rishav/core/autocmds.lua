@@ -126,7 +126,7 @@ autocmd("FileType", {
 
 -- Custom ColorColumn highlight
 local function set_custom_highlights()
-    vim.api.nvim_set_hl(0, "ColorColumn", { ctermbg = 0, bg = "#26233a" })
+    vim.api.nvim_set_hl(0, "ColorColumn", { ctermbg = 0, bg = "#24283b" })
 end
 
 autocmd("ColorScheme", {

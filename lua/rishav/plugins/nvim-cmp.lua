@@ -196,14 +196,14 @@ return {
 
             -- -- Cmdline setup for search
             -- Tab/S-Tab for popupmenu navigation handled by noice.lua
-            -- cmp.setup.cmdline(":", {
-            --     mapping = cmp.mapping.preset.cmdline(),
-            --     sources = cmp.config.sources({
-            --         { name = "path" },
-            --     }, {
-            --         { name = "cmdline", option = { ignore_cmds = { "Man", "!" } } },
-            --     }),
-            -- })
+            cmp.setup.cmdline(":", {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = "path" },
+                }, {
+                    { name = "cmdline", option = { ignore_cmds = { "Man", "!" } } },
+                }),
+            })
         end,
     },
 }
