@@ -4,10 +4,10 @@ local M = {}
 
 -- Diagnostic icons
 M.diagnostics = {
-    Error = " ",
-    Warn = " ",
-    Hint = "󰠠 ",
-    Info = " ",
+    Error = " ",
+    Warn  = " ",
+    Hint  = " ",
+    Info  = " ",
 }
 
 -- Git icons

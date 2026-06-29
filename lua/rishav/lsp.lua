@@ -58,8 +58,10 @@ local function setup_keymaps(client, bufnr)
     map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
     map("n", "gR", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
     map("n", "gr", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
-    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", vim.tbl_extend("force", opts, { desc = "Go to implementations" }))
-    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
+    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>",
+        vim.tbl_extend("force", opts, { desc = "Go to implementations" }))
+    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>",
+        vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
 
     -- Documentation
     map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
@@ -70,7 +72,8 @@ local function setup_keymaps(client, bufnr)
 
     -- Diagnostics (leader + d)
     map("n", "<leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Line diagnostics (float)" }))
-    map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", vim.tbl_extend("force", opts, { desc = "Buffer diagnostics" }))
+    map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>",
+        vim.tbl_extend("force", opts, { desc = "Buffer diagnostics" }))
 
     -- Diagnostic jumps
     map("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
@@ -124,6 +127,7 @@ vim.diagnostic.config({
     float = {
         border = "rounded",
     },
+    virtual_text = true,
 })
 
 -- Configure floating windows with rounded borders (Neovim 0.11+)
