@@ -33,82 +33,16 @@ require("lazy").setup({
         { import = "rishav.plugins.lsp" },
     },
 
-    defaults = {
-        lazy = true, -- Lazy load by default for better startup
-        version = false, -- Always use latest commit
-    },
-
     install = {
-        colorscheme = { "cyberdream", "habamax" },
-        missing = true, -- Install missing plugins on startup
+        colorscheme = { "rose-pine", "habamax" },
     },
 
     checker = {
-        enabled = true, -- Check for updates
-        notify = false, -- Don't notify on updates
-        frequency = 86400, -- Check once per day
+        enabled = true,
+        notify = false,
     },
 
     change_detection = {
-        enabled = true,
-        notify = false, -- Don't notify on config changes
-    },
-
-    ui = {
-        size = { width = 0.8, height = 0.8 },
-        border = "rounded",
-        backdrop = 60,
-        icons = {
-            cmd = " ",
-            config = "",
-            event = " ",
-            ft = " ",
-            init = " ",
-            import = " ",
-            keys = " ",
-            lazy = "󰒲 ",
-            loaded = "●",
-            not_loaded = "○",
-            plugin = " ",
-            runtime = " ",
-            require = "󰢱 ",
-            source = " ",
-            start = " ",
-            task = "✔ ",
-            list = {
-                "●",
-                "➜",
-                "★",
-                "‒",
-            },
-        },
-    },
-
-    performance = {
-        cache = {
-            enabled = true,
-        },
-        reset_packpath = true,
-        rtp = {
-            reset = true, -- Reset rtp to $VIMRUNTIME and config
-            disabled_plugins = {
-                "gzip",
-                "matchit",
-                "matchparen",
-                "netrwPlugin",
-                "tarPlugin",
-                "tohtml",
-                "tutor",
-                "zipPlugin",
-                "rplugin",
-                "spellfile",
-            },
-        },
-    },
-
-    -- Enable profiling (useful for debugging slow startup)
-    profiling = {
-        loader = false,
-        require = false,
+        notify = false,
     },
 })

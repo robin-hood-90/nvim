@@ -27,8 +27,8 @@ map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 map("n", "<leader>W", "<cmd>wa<CR>", { desc = "Save all" })
 map("n", "<Esc>", "<cmd>nohl<CR>", { desc = "Clear highlights" })
 
--- for competitive programming
-vim.keymap.set("n", "<leader>rs", function()
+-- for competitive programming (moved from <leader>rs to avoid conflict with substitute operator)
+vim.keymap.set("n", "<leader>!!", function()
     vim.cmd("w") -- save file
 
     local run_sh = vim.fn.getcwd() .. "/run.sh"
@@ -111,8 +111,8 @@ map("n", "<leader>Y", [["+Y]], { desc = "Yank line to clipboard" })
 map({ "n", "v" }, "<leader>p", [["+p]], { desc = "Paste from clipboard" })
 map({ "n", "v" }, "<leader>P", [["+P]], { desc = "Paste before from clipboard" })
 
--- Quick replace word under cursor
-map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
+-- Quick replace word under cursor (moved from <leader>rw to avoid conflict with substitute operator)
+map("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
 
 --------------------------------------------------------------------------------
 -- Windows / Splits
@@ -162,32 +162,27 @@ map("n", "<leader><Tab>", "<cmd>e #<CR>", { desc = "Alternate buffer" })
 
 --------------------------------------------------------------------------------
 -- Quickfix / Location List (use Trouble mainly, these are fallbacks)
+-- [l / ]l reserved for treesitter textobjects loop navigation
 --------------------------------------------------------------------------------
 map("n", "[q", "<cmd>cprev<CR>zz", { desc = "Previous quickfix" })
 map("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
-map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Previous location" })
-map("n", "]l", "<cmd>lnext<CR>zz", { desc = "Next location" })
 
 --------------------------------------------------------------------------------
 -- Diagnostics (bracket navigation + <leader>x for Trouble integration)
 --------------------------------------------------------------------------------
-map("n", "[d", function()
-    vim.diagnostic.jump({ count = -1, float = true })
-end, { desc = "Previous diagnostic" })
-map("n", "]d", function()
-    vim.diagnostic.jump({ count = 1, float = true })
-end, { desc = "Next diagnostic" })
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "[e", function()
-    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true })
+    vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { desc = "Previous error" })
 map("n", "]e", function()
-    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true })
+    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { desc = "Next error" })
 map("n", "[w", function()
-    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN, float = true })
+    vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
 end, { desc = "Previous warning" })
 map("n", "]w", function()
-    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN, float = true })
+    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
 end, { desc = "Next warning" })
 map("n", "<leader>xf", vim.diagnostic.open_float, { desc = "Line diagnostics (float)" })
 

@@ -30,7 +30,9 @@ return {
         -- Primary find operations (most used)
         { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
         { "<leader>fg", "<cmd>Telescope live_grep<CR>", desc = "Live grep" },
+        { "<leader>fs", "<cmd>Telescope live_grep<CR>", desc = "Search in project" },
         { "<leader>fw", "<cmd>Telescope grep_string<CR>", desc = "Grep word under cursor" },
+        { "<leader>fc", "<cmd>Telescope grep_string<CR>", desc = "Grep cursor word" },
         { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
         { "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent files" },
         { "<leader>f/", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Search in buffer" },

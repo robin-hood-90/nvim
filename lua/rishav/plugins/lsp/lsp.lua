@@ -1,32 +1,15 @@
 ---@module "rishav.plugins.lsp.lsp"
----LSP configuration
+---LSP configuration (josean-dev style)
 return {
-    "neovim/nvim-lspconfig",
+    "hrsh7th/cmp-nvim-lsp",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-        "hrsh7th/cmp-nvim-lsp",
         { "antosha417/nvim-lsp-file-operations", config = true },
-        {
-            "folke/lazydev.nvim",
-            ft = "lua",
-            opts = {
-                library = {
-                    { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-                },
-            },
-        },
+        { "folke/lazydev.nvim", opts = {} },
     },
     config = function()
         local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
-        -- Get capabilities from cmp-nvim-lsp
         local capabilities = cmp_nvim_lsp.default_capabilities()
-
-        -- Add folding capabilities for nvim-ufo
-        capabilities.textDocument.foldingRange = {
-            dynamicRegistration = false,
-            lineFoldingOnly = true,
-        }
 
         vim.lsp.config("*", {
             capabilities = capabilities,

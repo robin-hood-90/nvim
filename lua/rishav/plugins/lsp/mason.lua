@@ -34,6 +34,7 @@ return {
                 "emmet_ls",
                 "eslint",
                 "graphql",
+                "prismals",
                 -- Languages
                 "lua_ls",
                 "pyright",

@@ -1,11 +1,10 @@
 ---@module "rishav.lsp"
----LSP keymaps and configuration
+---LSP keymaps and configuration (josean-dev style)
 ---
 --- LSP keybindings follow conventions:
 --- g prefix - Go to (definition, references, etc.)
 --- K - Hover documentation
 --- <leader>c prefix - Code actions (rename, code actions, LSP management)
---- <leader>l - Format file (via conform.nvim)
 local utils = require("rishav.core.utils")
 local icons = require("rishav.core.icons")
 
@@ -57,63 +56,32 @@ local function setup_keymaps(client, bufnr)
     -- Navigation (g prefix for "go to")
     map("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
     map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+    map("n", "gR", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
     map("n", "gr", "<cmd>Telescope lsp_references<CR>", vim.tbl_extend("force", opts, { desc = "Go to references" }))
-    map(
-        "n",
-        "gi",
-        "<cmd>Telescope lsp_implementations<CR>",
-        vim.tbl_extend("force", opts, { desc = "Go to implementations" })
-    )
-    map(
-        "n",
-        "gt",
-        "<cmd>Telescope lsp_type_definitions<CR>",
-        vim.tbl_extend("force", opts, { desc = "Go to type definition" })
-    )
+    map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", vim.tbl_extend("force", opts, { desc = "Go to implementations" }))
+    map("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
 
     -- Documentation
     map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-    map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
-    map("i", "<C-k>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
 
     -- Code actions (leader + c)
     map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-    map(
-        "n",
-        "<leader>cs",
-        "<cmd>Telescope lsp_document_symbols<CR>",
-        vim.tbl_extend("force", opts, { desc = "Document symbols" })
-    )
-    map(
-        "n",
-        "<leader>cS",
-        "<cmd>Telescope lsp_workspace_symbols<CR>",
-        vim.tbl_extend("force", opts, { desc = "Workspace symbols" })
-    )
-
-    -- LSP management (leader + c for code operations)
     map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-    -- Note: Formatting is handled by conform.nvim with <leader>l
-    map("n", "<leader>ci", "<cmd>checkhealth vim.lsp<CR>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
-    map("n", "<leader>cR", "<cmd>lsp restart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
 
-    -- Inlay hints toggle (if supported)
-    if client:supports_method("textDocument/inlayHint", bufnr) then
-        map("n", "<leader>ch", function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
-        end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
-    end
+    -- Diagnostics (leader + d)
+    map("n", "<leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Line diagnostics (float)" }))
+    map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", vim.tbl_extend("force", opts, { desc = "Buffer diagnostics" }))
 
-    -- Codelens (if supported)
+    -- Diagnostic jumps
+    map("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+    map("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+
+    -- LSP restart
+    map("n", "<leader>rs", "<cmd>lsp restart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+
+    -- Codelens
     if client:supports_method("textDocument/codeLens", bufnr) then
         map("n", "<leader>cl", vim.lsp.codelens.run, vim.tbl_extend("force", opts, { desc = "Run codelens" }))
-        map("n", "<leader>cL", function()
-            local filter = { bufnr = bufnr }
-            if vim.lsp.codelens.is_enabled(filter) then
-                vim.lsp.codelens.enable(false, filter)
-            end
-            vim.lsp.codelens.enable(true, filter)
-        end, vim.tbl_extend("force", opts, { desc = "Enable codelens" }))
     end
 end
 
@@ -121,42 +89,8 @@ end
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 local function on_attach(client, bufnr)
-    -- Enable completion
-
-    -- Setup keymaps
     setup_keymaps(client, bufnr)
-
-    if client:supports_method("textDocument/inlayHint", bufnr) then
-        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-    end
-
     setup_codelens(client, bufnr)
-
-    -- Document highlight on cursor hold (if supported)
-    if client:supports_method("textDocument/documentHighlight", bufnr) then
-        local highlight_augroup = vim.api.nvim_create_augroup("lsp_document_highlight_" .. bufnr, { clear = true })
-
-        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-            buffer = bufnr,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.document_highlight,
-        })
-
-        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-            buffer = bufnr,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.clear_references,
-        })
-
-        vim.api.nvim_create_autocmd("LspDetach", {
-            buffer = bufnr,
-            group = highlight_augroup,
-            callback = function()
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds({ group = highlight_augroup })
-            end,
-        })
-    end
 end
 
 -- LspAttach autocmd
@@ -187,8 +121,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Configure diagnostic signs using icons module
 vim.diagnostic.config({
     signs = icons.get_diagnostic_signs(),
+    float = {
+        border = "rounded",
+    },
 })
 
 -- Configure floating windows with rounded borders (Neovim 0.11+)
--- Uses the new 'winborder' option instead of deprecated vim.lsp.with()
 vim.o.winborder = "rounded"
