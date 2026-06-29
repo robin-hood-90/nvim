@@ -3,15 +3,15 @@
 ---
 ---This module loads all core configurations in the correct order:
 ---1. Options - Basic vim options and settings
----2. Keymaps - Global keybindings
----3. Autocmds - Autocommands
----4. Terminal - Terminal management
----
----Note: Treesitter is now handled by nvim-treesitter plugin (josean-dev style)
+---2. Treesitter - Highlighting, folding, parser management (built-in 0.12)
+---3. Keymaps - Global keybindings
+---4. Autocmds - Autocommands
+---5. Terminal - Terminal management
 
 -- Load modules in order (options first, as other modules may depend on them)
 local modules = {
     "rishav.core.options",
+    "rishav.core.treesitter",
     "rishav.core.keymaps",
     "rishav.core.autocmds",
     "rishav.core.terminal",

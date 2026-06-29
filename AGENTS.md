@@ -15,8 +15,8 @@ stylua lua/                                         # format all lua (4-space in
 
 ## Key Architecture Decisions
 
-### Treesitter: nvim-treesitter plugin (josean-dev style)
-Uses `nvim-treesitter/nvim-treesitter` with `nvim-treesitter-textobjects` for extensive textobject select/swap/move keymaps. Parsers are auto-installed via `ensure_installed`. Previously used Neovim 0.12 built-in TS but switched to plugin for textobjects support.
+### Treesitter: Neovim 0.12 built-in only
+Uses Neovim's core `vim.treesitter` API directly. No `nvim-treesitter` plugin. Highlighting and folding are set up in `lua/rishav/core/treesitter.lua`. Parser installation requires the `tree-sitter` CLI — missing parsers are reported at startup but don't block loading. The only treesitter-related plugin is `nvim-ts-autotag`.
 
 ### LSP: `vim.lsp.config` + `after/lsp/` (Neovim 0.11+)
 - Server configs are **plain tables** returned from `after/lsp/[server].lua`
@@ -81,7 +81,7 @@ after/
 1. **Do not edit `lazy-lock.json`** — auto-generated
 2. **Do not add `on_attach`** to `after/lsp/` tables — use `LspAttach` in `lsp.lua`
 3. **Do not use deprecated `require('lspconfig')` setup pattern** — use `vim.lsp.config` + `vim.lsp.enable`
-4. **Do not add nvim-treesitter-context** — dropped. nvim-treesitter and textobjects are used
+4. **Do not add nvim-treesitter or nvim-treesitter-textobjects** — use built-in TS only (0.12 core)
 5. **svelte server**: TS/JS change notifications handled in `lsp.lua` LspAttach, gated by `client.name == "svelte"`
 6. **java codelens**: handled generically by `LspAttach` — no java-specific autocmd needed
 7. **Substitute keymaps** (`<leader>r`/`<leader>rr`/`<leader>R`) conflict with `<leader>rw`/`<leader>rs` — those keys were moved to `<leader>cw`/`<leader>!!`

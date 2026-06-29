@@ -162,10 +162,11 @@ map("n", "<leader><Tab>", "<cmd>e #<CR>", { desc = "Alternate buffer" })
 
 --------------------------------------------------------------------------------
 -- Quickfix / Location List (use Trouble mainly, these are fallbacks)
--- [l / ]l reserved for treesitter textobjects loop navigation
 --------------------------------------------------------------------------------
 map("n", "[q", "<cmd>cprev<CR>zz", { desc = "Previous quickfix" })
 map("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
+map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Previous location" })
+map("n", "]l", "<cmd>lnext<CR>zz", { desc = "Next location" })
 
 --------------------------------------------------------------------------------
 -- Diagnostics (bracket navigation + <leader>x for Trouble integration)
