@@ -2,14 +2,14 @@ return {
     "rmagatti/auto-session",
     keys = {
         {
-            "<leader>wr",
+            "<leader>Sr",
             function()
                 vim.cmd.AutoSession("restore")
             end,
             desc = "Restore session for cwd",
         },
         {
-            "<leader>ws",
+            "<leader>Ss",
             function()
                 vim.cmd.AutoSession("save")
             end,

@@ -4,8 +4,8 @@
 --- Keybindings use number keys for intuitive file slots:
 --- <leader>ha - Add file to harpoon
 --- <leader>hh - Toggle harpoon menu
---- <leader>1-4 - Quick jump to file 1-4
---- [H / ]H - Navigate prev/next in list
+--- <M-1>..<M-5> - Quick jump to file 1-5
+--- [s / ]s - Navigate prev/next in list
 return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",

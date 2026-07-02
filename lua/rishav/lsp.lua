@@ -68,10 +68,9 @@ local function setup_keymaps(client, bufnr)
 
     -- Code actions (leader + c)
     map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-    map("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+    map("n", "<leader>cn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
 
-    -- Diagnostics (leader + d)
-    map("n", "<leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Line diagnostics (float)" }))
+    -- Diagnostics (leader + D for buffer list; float lives on <leader>xf)
     map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>",
         vim.tbl_extend("force", opts, { desc = "Buffer diagnostics" }))
 
@@ -80,7 +79,7 @@ local function setup_keymaps(client, bufnr)
     map("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
 
     -- LSP restart
-    map("n", "<leader>rs", "<cmd>lsp restart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+    map("n", "<leader>cR", "<cmd>lsp restart<CR>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
 
     -- Codelens
     if client:supports_method("textDocument/codeLens", bufnr) then
